@@ -1,10 +1,10 @@
-name: Build
+name: Build, test and lint
 
 on: push
 
 jobs:
   run-tests:
-    name: Build app
+    name: Build, test and lint
     runs-on: ubuntu-latest
 
     steps:
