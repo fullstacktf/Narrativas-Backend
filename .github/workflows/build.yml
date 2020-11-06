@@ -24,11 +24,12 @@ jobs:
         run:  go get -u golang.org/x/lint/golint
       
       - name: Build
-        run: cd backend/src/
-        run:  go build -v 
+        run:  |
+              cd backend/src/
+              go build -v 
 
-      - name: Lint && vet
-        run: cd backend/src/
+      - name: Lint && vet 
         run: |
+              cd backend/src/
               golint .
               go vet .
