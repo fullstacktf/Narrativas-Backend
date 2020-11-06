@@ -1,0 +1,31 @@
+name: Build
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    name: Build app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Setup Go
+        uses: actions/setup-go@v2   
+        with:
+          go-version: '1.15.3'
+              
+      - name: Install dependencies
+        run:  go get -u golang.org/x/lint/golint
+      
+      - name: Build app
+        run: go build .
+
+      - name: lint 
+        run: |
+              golint .
+              go vet .
