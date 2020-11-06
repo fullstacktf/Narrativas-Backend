@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run:  go get -u golang.org/x/lint/golint
       
-      - name: Build app
+      - name: Build
         run: go build .
 
-      - name: lint 
+      - name: Lint && vet
         run: |
               golint .
               go vet .
