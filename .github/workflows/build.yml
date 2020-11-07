@@ -21,11 +21,11 @@ jobs:
       
       - name: Build
         run:  |
-              cd backend/src/
+              cd src/
               go build -v 
 
       - name: Lint && vet 
         run: |
-              cd backend/src/
+              cd src/
               golint .
               go vet .
