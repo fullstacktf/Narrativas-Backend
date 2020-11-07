@@ -2,10 +2,10 @@
 
 services: 
   server:
-    build: ./backend
+    build: ./
     container_name: "rollify_backend"
     ports:
-      - "80:80"
+      - "10000:10000"
     networks:
       - rollify-net
   bbdd:
@@ -21,4 +21,4 @@ services:
 
 networks:
   rollify-net:
-    name: rollify_network
+    name: rollify_backend-net
