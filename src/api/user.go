@@ -1,3 +1,14 @@
+package user
+
+import (
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+)
+
 type User struct {
 	ID       uint64 `json:"id"`
 	Username string `json:"username"`
