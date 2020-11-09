@@ -23,4 +23,6 @@
 /vendor/
 /Godeps/
 
+# Remove main executable
+src/main
 # End of https://www.toptal.com/developers/gitignore/api/go
