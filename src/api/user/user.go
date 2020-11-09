@@ -9,20 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// User : user data struct
 type User struct {
 	ID       uint64 `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-//A sample use
+// A sample use until BBDD is up
 var user = User{
 	ID:       1,
 	Username: "username",
 	Password: "password",
 }
 
-func CreateToken(userid uint64) (string, error) {
+func createToken(userid uint64) (string, error) {
 	var err error
 	//Creating Access Token
 	os.Setenv("ACCESS_SECRET", "jdnfksdmfksd") //this should be in an env file
@@ -38,6 +39,7 @@ func CreateToken(userid uint64) (string, error) {
 	return token, nil
 }
 
+// Login :  users can log in this endpoint and receive a JTW
 func Login(c *gin.Context) {
 	var u User
 	if err := c.ShouldBindJSON(&u); err != nil {
@@ -45,10 +47,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// TO DO check user information is OK in database
 	if user.Username != u.Username || user.Password != u.Password {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
 		return
 	}
+	// // // // // //
+
 	token, err := CreateToken(user.ID)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, err.Error())
