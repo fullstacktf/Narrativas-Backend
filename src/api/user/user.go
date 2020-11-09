@@ -23,10 +23,11 @@ var user = User{
 	Password: "password",
 }
 
+// createToken : generates a JWT that lasts 8 hours
 func createToken(userid uint64) (string, error) {
 	var err error
-	//Creating Access Token
-	os.Setenv("ACCESS_SECRET", "jdnfksdmfksd") //this should be in an env file
+
+	os.Setenv("ACCESS_SECRET", os.Getenv("ACCESS_SECRET"))
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userid
@@ -54,7 +55,7 @@ func Login(c *gin.Context) {
 	}
 	// // // // // //
 
-	token, err := CreateToken(user.ID)
+	token, err := createToken(user.ID)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, err.Error())
 		return
