@@ -1,7 +1,7 @@
 package main
 
 import (
-	character "github.com/fullstacktf/Narrativas-Backend/api"
+	character "github.com/fullstacktf/Narrativas-Backend/api/character"
 
 	"github.com/gin-gonic/gin"
 )
