@@ -23,15 +23,15 @@ var user = User{
 	Password: "password",
 }
 
-// createToken : generates a JWT that lasts 8 hours
+// createToken : generates a JWT that lasts 15 min
 func createToken(userid uint64) (string, error) {
 	var err error
 
-	os.Setenv("ACCESS_SECRET", os.Getenv("ACCESS_SECRET"))
+	os.Setenv("ACCESS_SECRET", os.Getenv("ROLLIFY_JWT_SECRET"))
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userid
-	atClaims["exp"] = time.Now().Add(time.Hour * 8).Unix()
+	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 	if err != nil {
