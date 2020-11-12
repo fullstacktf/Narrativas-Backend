@@ -31,6 +31,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags:  user/app:latest
+          tags:  b3cl0s3r/rollifybackend
 
       
