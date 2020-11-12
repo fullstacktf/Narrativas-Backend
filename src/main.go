@@ -1,17 +1,17 @@
 package main
 
 import (
-	character "github.com/fullstacktf/Narrativas-Backend/api/character"
+	controllers "github.com/fullstacktf/Narrativas-Backend/api/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
-	r.GET("/character/:id", character.GetCharacter)
-	r.POST("/character/", character.PostCharacter)
-	r.DELETE("/character/:id", character.DeleteCharacter)
-	r.PATCH("/character/:id", character.PatchCharacter)
+	r.GET("/character/:id", controllers.GetCharacter)
+	r.POST("/character/", controllers.PostCharacter)
+	r.DELETE("/character/:id", controllers.DeleteCharacter)
+	r.PATCH("/character/:id", controllers.PatchCharacter)
 
 	r.Run(":10000")
 }
