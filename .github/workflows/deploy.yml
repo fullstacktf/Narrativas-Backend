@@ -13,9 +13,11 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Check branch
-        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-        if: ${{ BRANCH_NAME != "main" }}
+      - name: Extract and check if correct branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+        if: ${{ steps.extract_branch.outputs.branch  != "main" }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
