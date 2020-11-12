@@ -1,5 +1,4 @@
 # Narrativas Backend
-        if: ${{ BRANCH_NAME != "main" }}
 
 ## Endpoints MVP
 
