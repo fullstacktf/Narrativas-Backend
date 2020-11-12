@@ -17,7 +17,7 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-        if: ${{ steps.extract_branch.outputs.branch  != "main" }}
+        if: ${{ steps.extract_branch.outputs.branch  != 'main' }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
