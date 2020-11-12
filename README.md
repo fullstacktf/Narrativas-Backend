@@ -1,5 +1,6 @@
 # Narrativas Backend
-aaa
+        if: ${{ BRANCH_NAME != "main" }}
+
 ## Endpoints MVP
 
 **/api/character/**
