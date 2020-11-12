@@ -1,0 +1,17 @@
+name: Deploy project
+
+on: 
+  push:
+    tags:
+      - v*
+    branches:
+      - gitactions
+
+jobs: 
+  release-on-push-tag:
+    name: Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: test
+      run: echo "its working"
