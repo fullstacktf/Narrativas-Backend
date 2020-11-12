@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
+
+      - name: Check branch
         run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
         if: ${{ BRANCH_NAME != "main" }}
 
