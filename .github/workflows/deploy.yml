@@ -1,17 +1,24 @@
 name: Deploy project
 
 on: 
-  create:
-    tags:
-      - v*
+  push:
     branches:
-      - gitactions
+      gitactions
 
-jobs: 
-  release-on-push-tag:
-    name: Deploy
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    
     steps:
-    - name: test
-      run: echo "its working"
+      - name: Check out Git repository
+        uses: actions/checkout@v2 
+
+     - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: b3cl0s3r/rollifybackend
+          tag_with_ref: true
+    
+  
