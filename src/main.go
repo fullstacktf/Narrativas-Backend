@@ -14,6 +14,6 @@ func main() {
 		Password: "password",
 	}
 
-	db := config.DbConnect(dbdata)
+	config.DbConnect(dbdata)
 	server.Serve()
 }

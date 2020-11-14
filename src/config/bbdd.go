@@ -32,11 +32,9 @@ func dbURL(dbConfig *DBConfig) string {
 // DbConnect : Connects to database
 func DbConnect(config DBConfig) {
 
-	db, err := gorm.Open(mysql.Open(dbURL(&config)), &gorm.Config{})
+	_, err := gorm.Open(mysql.Open(dbURL(&config)), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Error connection to BBDD")
 	}
-
-	return db
 }
