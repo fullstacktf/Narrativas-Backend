@@ -18,5 +18,5 @@ func Serve() {
 	r.POST("/story/", controllers.PostStory)
 	r.DELETE("/story/:id", controllers.DeleteStory)
 
-	r.Run(":8080")
+	r.Run(":9090")
 }

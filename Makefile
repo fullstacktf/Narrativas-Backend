@@ -5,4 +5,4 @@ start:
 stop:
 	docker-compose stop
 clean:
-	rm -rf database/mysql_data
+	sudo rm -rf database/mysql_data

@@ -1,6 +1,7 @@
-# TO DO
+version: '2'
 
 services: 
+  
   bbdd:
     image: mariadb:10.5.6
     container_name: "rollify_bbdd"
@@ -16,15 +17,37 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - rollify-net
+      rollify-net:
+        ipv4_address: 172.16.238.3 
+        ipv6_address: "2001:3984:3989::3"
+
   server:
     build: ./
     container_name: "rollify_backend"
     ports:
       - "8080:8080"
+    depends_on:
+      - bbdd
+    command: sh -c "/wait && /app/main"
+    environment:
+      - WAIT_HOSTS=rollify_bbdd:3306
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=10
+      - WAIT_HOST_CONNECT_TIMEOUT=60
     networks:
-      - rollify-net
+      rollify-net:
+        ipv4_address: 172.16.238.2 
+        ipv6_address: "2001:3984:3989::2"
 
 networks:
   rollify-net:
-    name: rollify_backend-net
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
+        - subnet: "2001:3984:3989::/64"
+          gateway: "2001:3984:3989::1"
