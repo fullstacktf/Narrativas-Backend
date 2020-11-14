@@ -12,10 +12,10 @@ services:
     image: mariadb:10.5.6
     container_name: "rollify_bbdd"
     environment:
-      MYSQL_ROOT_PASSWORD: changeme
-      MYSQL_DATABASE: mybbdd
-      MYSQL_USER: user
-      MYSQL_PASSWORD: changeme
+      MYSQL_ROOT_PASSWORD: 82y!RQ!^3e6@7$B4Q3*$
+      MYSQL_DATABASE: rollify
+      MYSQL_USER: rollify
+      MYSQL_PASSWORD: 89Xu!%3r!7kE*A
     networks:
       - rollify-net
 
