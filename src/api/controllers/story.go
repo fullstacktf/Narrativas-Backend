@@ -18,3 +18,9 @@ func DeleteStory(c *gin.Context) {
 	message := "Story with id " + id + " was deleted."
 	c.String(http.StatusOK, message)
 }
+
+// PostStory : endpoint that creates a story
+func PostStory(c *gin.Context) {
+	message := "Story created"
+	c.String(http.StatusOK, message)
+}

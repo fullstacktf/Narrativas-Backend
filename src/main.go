@@ -14,6 +14,7 @@ func main() {
 	r.PATCH("/character/:id", controllers.PatchCharacter)
 
 	r.GET("/story/:id", controllers.GetStory)
+	r.POST("/story/", controllers.PostStory)
 	r.DELETE("/story/:id", controllers.DeleteStory)
 
 	r.Run(":10000")
