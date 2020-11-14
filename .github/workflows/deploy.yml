@@ -33,6 +33,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: b3cl0s3r/rollifybackend:${{ steps.get_version.outputs.VERSION }}
+          tags: |
+            b3cl0s3r/rollifybackend:latest
+            b3cl0s3r/rollifybackend:${{ steps.get_version.outputs.VERSION }}
 
       
