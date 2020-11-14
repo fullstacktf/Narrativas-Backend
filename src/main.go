@@ -1,8 +1,8 @@
 package main
 
 import (
-	server "github.com/fullstacktf/Narrativas-Backend/api/server"
 	config "github.com/fullstacktf/Narrativas-Backend/config"
+	router "github.com/fullstacktf/Narrativas-Backend/router"
 )
 
 func main() {
@@ -15,5 +15,6 @@ func main() {
 	}
 
 	config.DbConnect(dbdata)
-	server.Serve()
+	r := router.InitRouter()
+	r.Run(":9090")
 }
