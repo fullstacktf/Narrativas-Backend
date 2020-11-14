@@ -13,7 +13,7 @@ func main() {
 	r.DELETE("/character/:id", controllers.DeleteCharacter)
 	r.PATCH("/character/:id", controllers.PatchCharacter)
 
-	r.GET("/story/:id", story.GetStory)
+	r.GET("/story/:id", controllers.GetStory)
 
 	r.Run(":10000")
 }
