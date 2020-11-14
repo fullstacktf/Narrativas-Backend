@@ -25,4 +25,8 @@
 
 # Remove main executable
 src/main
+
+# Mysql Data
+database/mysql_data
+
 # End of https://www.toptal.com/developers/gitignore/api/go

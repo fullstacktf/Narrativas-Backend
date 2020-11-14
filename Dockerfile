@@ -8,5 +8,5 @@ FROM alpine
 COPY --from=builder /build/main /app/
 WORKDIR /app 
 
-EXPOSE 10000/tcp
+EXPOSE 8080/tcp
 CMD ["./main"]
