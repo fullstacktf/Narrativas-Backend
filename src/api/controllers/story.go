@@ -24,3 +24,10 @@ func PostStory(c *gin.Context) {
 	message := "Story created"
 	c.String(http.StatusOK, message)
 }
+
+// PatchStory : endpoint that updates a story
+func PatchStory(c *gin.Context) {
+	id := c.Params.ByName("id")
+	message := "Story with id " + id + " was updated."
+	c.String(http.StatusOK, message)
+}
