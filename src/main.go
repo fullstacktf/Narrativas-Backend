@@ -1,12 +1,12 @@
 package main
 
 import (
-	config "github.com/fullstacktf/Narrativas-Backend/config"
+	common "github.com/fullstacktf/Narrativas-Backend/common"
 	router "github.com/fullstacktf/Narrativas-Backend/router"
 )
 
 func main() {
-	dbdata := config.DBConfig{
+	dbdata := common.DBConfig{
 		Host:     "172.16.238.3",
 		Port:     3306,
 		User:     "rollify",
@@ -14,7 +14,8 @@ func main() {
 		Password: "password",
 	}
 
-	config.DbConnect(dbdata)
+	common.DbInit(dbdata)
+
 	r := router.InitRouter()
-	r.Run(":9090")
+	r.Run(":8080")
 }

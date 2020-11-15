@@ -18,5 +18,7 @@ func InitRouter() *gin.Engine {
 	router.POST("/story/", controllers.PostStory)
 	router.DELETE("/story/:id", controllers.DeleteStory)
 
+	router.POST("/auth/register", controllers.Register)
+
 	return router
 }

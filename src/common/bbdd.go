@@ -1,4 +1,4 @@
-package config
+package common
 
 import (
 	"fmt"
@@ -29,12 +29,22 @@ func dbURL(dbConfig *DBConfig) string {
 	)
 }
 
-// DbConnect : Connects to database
-func DbConnect(config DBConfig) {
+// Tabler : replace table name
+type Tabler interface {
+	TableName() string
+}
 
-	_, err := gorm.Open(mysql.Open(dbURL(&config)), &gorm.Config{})
+// DB : database
+var DB *gorm.DB
+
+// DbInit : Initialices database
+func DbInit(config DBConfig) {
+
+	db, err := gorm.Open(mysql.Open(dbURL(&config)), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Error connection to BBDD")
 	}
+
+	DB = db
 }
