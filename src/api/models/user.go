@@ -1,7 +1,8 @@
 package models
 
 import (
-	"fmt"
+	"errors"
+	"regexp"
 
 	common "github.com/fullstacktf/Narrativas-Backend/common"
 
@@ -19,6 +20,17 @@ type User struct {
 	Email     string `gorm:"type:varchar(50); NOT NULL" json:"email" binding:"required"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// Check valid email
+var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+// isEmailValid : checks if the email provided passes the required structure and length.
+func isEmailValid(email string) bool {
+	if len(email) <= 3 || len(email) > 50 {
+		return false
+	}
+	return emailRegex.MatchString(email)
 }
 
 // hashAndSalt : crypts password
@@ -49,18 +61,23 @@ func (User) TableName() string {
 }
 
 // Insert : Inserts values into user table
-func (user *User) Insert() bool {
+func (user *User) Insert() (bool, error) {
 	var duplicated User
 	common.DB.Where("username = ?", &user.Username).Or("email = ?", &user.Email).Find(&duplicated)
 
 	if duplicated.ID != 0 {
-		return true
+		return false, errors.New("username or email already exists")
+	}
+
+	if !isEmailValid(user.Email) {
+		return false, errors.New("invalid email provided")
 	}
 
 	user.Password = hashAndSalt([]byte(user.Password))
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
-	result := common.DB.Omit("Id").Create(user)
-	fmt.Println(result.Error)
-	return false
+	if result := common.DB.Omit("Id").Create(user); result.Error != nil {
+		return false, errors.New("invalid data")
+	}
+	return true, nil
 }
