@@ -17,5 +17,5 @@ func main() {
 	common.DbInit(dbdata)
 
 	r := router.InitRouter()
-	r.Run(":10101")
+	r.Run(":8080")
 }
