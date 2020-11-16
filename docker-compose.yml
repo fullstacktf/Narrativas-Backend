@@ -20,8 +20,8 @@ services:
       - ${DATABASE_PORT_MAP}
     networks:
       rollify-net:
-        ipv4_address: 172.16.238.3 
-        ipv6_address: "2001:3984:3989::3"
+        ipv4_address: ${IPV4_DATABASE_ADDRESS}
+        ipv6_address: ${IPV6_DATABASE_ADDRESS}
 
   server:
     build: ./
@@ -40,8 +40,8 @@ services:
       - WAIT_HOST_CONNECT_TIMEOUT=60
     networks:
       rollify-net:
-        ipv4_address: 172.16.238.2 
-        ipv6_address: "2001:3984:3989::2"
+        ipv4_address: ${IPV4_BACKEND_ADDRESS}
+        ipv6_address: ${IPV6_BACKEND_ADDRESS}
 
 networks:
   rollify-net:
@@ -51,7 +51,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.238.0/24
-          gateway: 172.16.238.1
-        - subnet: "2001:3984:3989::/64"
-          gateway: "2001:3984:3989::1"
+        - subnet: ${IPV4_NETWORK}
+          gateway: ${IPV4_GATEWAY}
+        - subnet: ${IPV6_NETWORK}
+          gateway: ${IPV6_GATEWAY}

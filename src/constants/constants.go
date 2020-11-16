@@ -1,7 +1,6 @@
 package constants
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
@@ -20,8 +19,7 @@ var (
 func init() {
 	godotenv.Load()
 	godotenv.Load("../.env")
-	DatabaseHost = os.Getenv("DATABASE_HOST")
-	fmt.Println(DatabaseHost)
+	DatabaseHost = os.Getenv("IPV4_DATABASE_ADDRESS")
 	DatabaseUser = os.Getenv("DATABASE_USER")
 	DatabaseName = os.Getenv("DATABASE_NAME")
 	DatabasePassword = os.Getenv("DATABASE_PASSWORD")
