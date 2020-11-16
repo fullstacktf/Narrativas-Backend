@@ -1,21 +1,23 @@
 version: '2'
 
 services: 
-  
   bbdd:
     image: mariadb:10.5.6
     container_name: "rollify_bbdd"
+    env_file:
+    - .env
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "false"
-      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DATABASE_ENV}
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+
     volumes:
       - "./database/mysql_data:/var/lib/mysql"
       - "./database/init.d:/docker-entrypoint-initdb.d"
     ports:
-      - "3306:3306"
+      - ${DATABASE_PORT_MAP}
     networks:
       rollify-net:
         ipv4_address: 172.16.238.3 
@@ -24,8 +26,10 @@ services:
   server:
     build: ./
     container_name: "rollify_backend"
+    env_file:
+    - .env
     ports:
-      - "8080:8080"
+      - ${SERVER_PORT_MAP}
     depends_on:
       - bbdd
     command: sh -c "/wait && /app/main"
