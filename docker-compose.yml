@@ -7,10 +7,10 @@ services:
     container_name: "rollify_bbdd"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "false"
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: rollify
-      MYSQL_USER: rollify
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_ENV}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - "./database/mysql_data:/var/lib/mysql"
       - "./database/init.d:/docker-entrypoint-initdb.d"
