@@ -14,6 +14,7 @@ var (
 	DatabaseName     string
 	DatabasePassword string
 	DatabasePort     int
+	ServerPort       int
 )
 
 func init() {
@@ -25,4 +26,5 @@ func init() {
 	DatabaseName = os.Getenv("DATABASE_NAME")
 	DatabasePassword = os.Getenv("DATABASE_PASSWORD")
 	DatabasePort, _ = strconv.Atoi(os.Getenv("DATABASE_PORT"))
+	ServerPort, _ = strconv.Atoi(os.Getenv("SERVER_PORT"))
 }
