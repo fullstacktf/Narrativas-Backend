@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Character : structure
 type Character struct {
 	ID        uint   `gorm:"primary_key" json:"id"`
 	UserID    uint   `gorm:"NOT NULL" json:"userId" binding:"required"`
@@ -13,8 +14,7 @@ type Character struct {
 	CreatedAt time.Time
 }
 
-type Character_section struct {
-	ID        uint `gorm:"primary_key" json:"id"`
-	UpdatedAt time.Time
-	CreatedAt time.Time
+// TableName : Database table name map
+func (Character) TableName() string {
+	return "character"
 }
