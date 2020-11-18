@@ -10,8 +10,8 @@ import (
 
 // Character : character BBDD structure
 type Character struct {
-	ID        uint   `gorm:"primary_key" json:"id"`
-	UserID    uint   `gorm:"foreign_key; column:user_id" json:"userid"`
+	ID        uint   `gorm:"primaryKey" json:"id"`
+	UserID    uint   `gorm:"foreignKey; column:user_id" json:"userid"`
 	Name      string `gorm:"type:varchar(50)" json:"name" binding:"required"`
 	Biography string `json:"biography" binding:"required"`
 	Image     string `gorm:"type:varchar(150)" json:"image" binding:"required"`
