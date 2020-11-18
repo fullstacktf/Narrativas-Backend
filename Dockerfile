@@ -6,7 +6,11 @@ RUN go build -o main .
 
 FROM alpine
 COPY --from=builder /build/main /app/
+COPY .env /
 WORKDIR /app 
 
-EXPOSE 10000/tcp
+ENV WAIT_VERSION 2.7.2
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
+RUN chmod +x /wait
+
 CMD ["./main"]

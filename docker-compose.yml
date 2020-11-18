@@ -1,24 +1,57 @@
-# TO DO
+version: '2'
 
 services: 
-  server:
-    image: b3cl0s3r/rollifybackend
-    container_name: "rollify_backend"
-    ports:
-      - "10000:10000"
-    networks:
-      - rollify-net
   bbdd:
     image: mariadb:10.5.6
     container_name: "rollify_bbdd"
+    env_file:
+    - .env
     environment:
-      MYSQL_ROOT_PASSWORD: changeme
-      MYSQL_DATABASE: mybbdd
-      MYSQL_USER: user
-      MYSQL_PASSWORD: changeme
+      MYSQL_ALLOW_EMPTY_PASSWORD: "false"
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_ENV}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+
+    volumes:
+      - "./database/mysql_data:/var/lib/mysql"
+      - "./database/init.d:/docker-entrypoint-initdb.d"
+    ports:
+      - ${DATABASE_PORT_MAP}
     networks:
-      - rollify-net
+      rollify-net:
+        ipv4_address: ${IPV4_DATABASE_ADDRESS}
+        ipv6_address: ${IPV6_DATABASE_ADDRESS}
+
+  server:
+    image: b3cl0s3r/rollifybackend
+    container_name: "rollify_backend"
+    env_file:
+    - .env
+    ports:
+      - ${SERVER_PORT_MAP}
+    depends_on:
+      - bbdd
+    command: sh -c "/wait && /app/main"
+    environment:
+      - WAIT_HOSTS=rollify_bbdd:3306
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=10
+      - WAIT_HOST_CONNECT_TIMEOUT=60
+    networks:
+      rollify-net:
+        ipv4_address: ${IPV4_BACKEND_ADDRESS}
+        ipv6_address: ${IPV6_BACKEND_ADDRESS}
 
 networks:
   rollify-net:
-    name: rollify_backend-net
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: ${IPV4_NETWORK}
+          gateway: ${IPV4_GATEWAY}
+        - subnet: ${IPV6_NETWORK}
+          gateway: ${IPV6_GATEWAY}
