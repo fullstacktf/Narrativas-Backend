@@ -51,6 +51,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           source: "docker-compose.yml"
-          target: "docker-compose.yml"
-
+          target: "deploy/docker-compose.yml"
+## PRUEBA
       
