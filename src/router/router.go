@@ -9,14 +9,15 @@ import (
 // InitRouter : initialice router
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-	router.GET("/character/:id", controllers.GetCharacter)
-	router.POST("/character/", controllers.PostCharacter)
-	router.DELETE("/character/:id", controllers.DeleteCharacter)
-	router.PATCH("/character/:id", controllers.PatchCharacter)
+	router.GET("/characters/", controllers.GetCharacters)
+	router.GET("/characters/:id", controllers.GetCharacter)
+	router.POST("/characters/", controllers.PostCharacter)
+	router.DELETE("/characters/:id", controllers.DeleteCharacter)
+	router.PATCH("/characters/:id", controllers.PatchCharacter)
 
-	router.GET("/story/:id", controllers.GetStory)
-	router.POST("/story/", controllers.PostStory)
-	router.DELETE("/story/:id", controllers.DeleteStory)
+	router.GET("/stories/:id", controllers.GetStory)
+	router.POST("/stories/", controllers.PostStory)
+	router.DELETE("/stories/:id", controllers.DeleteStory)
 
 	router.POST("/auth/register", controllers.Register)
 

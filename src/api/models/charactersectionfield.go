@@ -8,8 +8,8 @@ import (
 
 // CharacterSectionField : Structure
 type CharacterSectionField struct {
-	ID          uint   `gorm:"primary_key" json:"id"`
-	SectionID   uint   `gorm:"primary_key" json:"sectionId"`
+	ID          uint   `gorm:"primaryKey" json:"id"`
+	SectionID   uint   `gorm:"primaryKey" json:"sectionId"`
 	Name        string `gorm:"type:varchar(50)" json:"name"`
 	Value       string `gorm:"type:varchar(255);NOT NULL" json:"value"`
 	Description string `json:"description"`
