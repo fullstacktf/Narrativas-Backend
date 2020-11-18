@@ -38,20 +38,19 @@ jobs:
           tags: |
             b3cl0s3r/rollifybackend:latest
             b3cl0s3r/rollifybackend:${{ steps.get_version.outputs.VERSION }}
-            
+
   ssh_deploy:
     needs: [push_to_registry]
     name: Deployment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@master
+      - name: SSH deployment
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          source: "docker-compose.yml"
-          target: "deploy/docker-compose.yml"
+          script: "echo `deploy`"
 ## PRUEBA
       
