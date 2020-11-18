@@ -10,20 +10,20 @@ import (
 
 // Character : character BBDD structure
 type Character struct {
-	ID          uint   `gorm:"primary_key" json:"id"`
-	UserID      uint   `gorm:"foreign_key; column:user_id" json:"userid"`
-	Name        string `gorm:"type:varchar(50)" json:"name" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	Image       string `gorm:"type:varchar(150)" json:"image" binding:"required"`
-	UpdatedAt   time.Time
-	CreatedAt   time.Time
+	ID        uint   `gorm:"primary_key" json:"id"`
+	UserID    uint   `gorm:"foreign_key; column:user_id" json:"userid"`
+	Name      string `gorm:"type:varchar(50)" json:"name" binding:"required"`
+	Biography string `json:"biography" binding:"required"`
+	Image     string `gorm:"type:varchar(150)" json:"image" binding:"required"`
+	UpdatedAt time.Time
+	CreatedAt time.Time
 }
 
 // CharacterData : character API structure
 type CharacterData struct {
-	Name        string `gorm:"type:varchar(50)" json:"name" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	Image       string `gorm:"type:varchar(150)" json:"image" binding:"required"`
+	Name      string `gorm:"type:varchar(50)" json:"name" binding:"required"`
+	Biography string `json:"biography" binding:"required"`
+	Image     string `gorm:"type:varchar(150)" json:"image" binding:"required"`
 }
 
 // Characters : array of characters
@@ -62,7 +62,7 @@ func (characters *Characters) Get(id int) error {
 	rows, err := common.DB.Debug().
 		Model(&Character{}).
 		Select(`actor.name,
-				    actor.description
+				    actor.biography
 					`).
 		Joins("JOIN user on user.id = actor.user_id").
 		Where("user.id = ?", id).
