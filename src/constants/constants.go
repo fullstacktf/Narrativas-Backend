@@ -18,7 +18,7 @@ var (
 
 func init() {
 	godotenv.Load()
-	godotenv.Load("../env/.env")
+	godotenv.Load("../.env")
 	DatabaseHost = os.Getenv("IPV4_DATABASE_ADDRESS")
 	DatabaseUser = os.Getenv("DATABASE_USER")
 	DatabaseName = os.Getenv("DATABASE_NAME")

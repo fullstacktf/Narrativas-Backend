@@ -24,7 +24,7 @@ services:
         ipv6_address: ${IPV6_DATABASE_ADDRESS}
 
   server:
-    image: b3cl0s3r/rollifybackend
+    build: .
     container_name: "rollify_backend"
     env_file:
     - .env
