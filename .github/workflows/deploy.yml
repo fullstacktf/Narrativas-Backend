@@ -38,6 +38,7 @@ jobs:
           tags: |
             b3cl0s3r/rollifybackend:latest
             b3cl0s3r/rollifybackend:${{ steps.get_version.outputs.VERSION }}
+            
   ssh_deploy:
     needs: [push_to_registry]
     name: Deployment
