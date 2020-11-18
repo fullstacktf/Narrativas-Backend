@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/fullstacktf/Narrativas-Backend/constants"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+// DB : database
+var DB *gorm.DB
 
 // DBConfig : Struct that configs database
 type DBConfig struct {
@@ -15,6 +20,18 @@ type DBConfig struct {
 	User     string
 	DBName   string
 	Password string
+}
+
+// BuildDBConfig : Generates DB configuration from env vars
+func BuildDBConfig() *DBConfig {
+	dbConfig := DBConfig{
+		Host:     constants.DatabaseHost,
+		Port:     constants.DatabasePort,
+		User:     constants.DatabaseUser,
+		Password: constants.DatabasePassword,
+		DBName:   constants.DatabaseName,
+	}
+	return &dbConfig
 }
 
 // dbURL : generates MySQL URL with the given config
@@ -34,13 +51,10 @@ type Tabler interface {
 	TableName() string
 }
 
-// DB : database
-var DB *gorm.DB
-
 // DbInit : Initialices database
-func DbInit(config DBConfig) {
+func DbInit(config *DBConfig) {
 
-	db, err := gorm.Open(mysql.Open(dbURL(&config)), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dbURL(config)), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Error connection to BBDD")

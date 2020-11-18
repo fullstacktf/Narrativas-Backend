@@ -1,21 +1,15 @@
 package main
 
 import (
-	common "github.com/fullstacktf/Narrativas-Backend/common"
-	router "github.com/fullstacktf/Narrativas-Backend/router"
+	"github.com/fullstacktf/Narrativas-Backend/common"
+	"github.com/fullstacktf/Narrativas-Backend/constants"
+	"github.com/fullstacktf/Narrativas-Backend/router"
 )
 
 func main() {
-	dbdata := common.DBConfig{
-		Host:     "172.16.238.3",
-		Port:     3306,
-		User:     "rollify",
-		DBName:   "rollify",
-		Password: "password",
-	}
-
+	dbdata := common.BuildDBConfig()
 	common.DbInit(dbdata)
 
 	r := router.InitRouter()
-	r.Run(":8080")
+	r.Run(":" + constants.ServerPort)
 }
