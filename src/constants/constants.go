@@ -14,6 +14,8 @@ var (
 	DatabasePassword string
 	DatabasePort     int
 	ServerPort       string
+	JWTSecret        string
+	AccessSecret     string
 )
 
 func init() {
@@ -25,4 +27,6 @@ func init() {
 	DatabasePassword = os.Getenv("DATABASE_PASSWORD")
 	DatabasePort, _ = strconv.Atoi(os.Getenv("DATABASE_PORT"))
 	ServerPort = os.Getenv("SERVER_PORT")
+	JWTSecret = os.Getenv("JWT_SECRET")
+	AccessSecret = os.Getenv("ACCESS_SECRET")
 }
