@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+
 	dbdata := common.BuildDBConfig()
 	common.DbInit(dbdata)
 
