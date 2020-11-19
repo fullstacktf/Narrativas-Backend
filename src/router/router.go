@@ -20,6 +20,7 @@ func InitRouter() *gin.Engine {
 	router.DELETE("/stories/:id", controllers.DeleteStory)
 
 	router.POST("/auth/register", controllers.Register)
+	router.POST("/auth/login", controllers.Login)
 
 	return router
 }

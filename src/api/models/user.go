@@ -2,13 +2,11 @@ package models
 
 import (
 	"errors"
-	"net/http"
 	"os"
-	"regexp"
 
 	"github.com/dgrijalva/jwt-go"
-	common "github.com/fullstacktf/Narrativas-Backend/common"
-	"github.com/gin-gonic/gin"
+	"github.com/fullstacktf/Narrativas-Backend/common"
+	"github.com/fullstacktf/Narrativas-Backend/constants"
 
 	"log"
 	"time"
@@ -16,25 +14,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var activeTokens []string
+
 // User : Structure
 type User struct {
 	ID        uint   `gorm:"primary_key" json:"id"`
-	Username  string `gorm:"type:varchar(50); NOT NULL" json:"username" binding:"required"`
-	Password  string `gorm:"type:varchar(255); NOT NULL" json:"password" binding:"required"`
-	Email     string `gorm:"type:varchar(50); NOT NULL" json:"email" binding:"required"`
+	Username  string `gorm:"type:varchar(50); NOT NULL" json:"username"`
+	Password  string `gorm:"type:varchar(255); NOT NULL" json:"password"`
+	Email     string `gorm:"type:varchar(50); NOT NULL" json:"email"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-}
-
-// Check valid email
-var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
-// isEmailValid : checks if the email provided passes the required structure and length.
-func isEmailValid(email string) bool {
-	if len(email) <= 3 || len(email) > 50 {
-		return false
-	}
-	return emailRegex.MatchString(email)
 }
 
 // hashAndSalt : crypts password
@@ -64,17 +53,13 @@ func (User) TableName() string {
 	return "user"
 }
 
-// Insert : Inserts values into user table
-func (user *User) Insert() (bool, error) {
+// Register : Register values into user table
+func (user *User) Register() (bool, error) {
 	var duplicated User
 	common.DB.Where("username = ?", &user.Username).Or("email = ?", &user.Email).Find(&duplicated)
 
 	if duplicated.ID != 0 {
 		return false, errors.New("username or email already exists")
-	}
-
-	if !isEmailValid(user.Email) {
-		return false, errors.New("invalid email provided")
 	}
 
 	user.Password = hashAndSalt([]byte(user.Password))
@@ -86,24 +71,17 @@ func (user *User) Insert() (bool, error) {
 	return true, nil
 }
 
-// A sample use until BBDD is up
-var user = User{
-	ID:       1,
-	Username: "username",
-	Password: "password",
-}
-
-// createToken : generates a JWT that lasts 15 min
+// createToken : generates a JWT that lasts 1 hour
 func createToken(userid uint64) (string, error) {
 	var err error
 
-	os.Setenv("ACCESS_SECRET", os.Getenv("ROLLIFY_JWT_SECRET"))
+	os.Setenv("ACCESS_SECRET", os.Getenv(constants.JWTSecret))
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userid
-	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	atClaims["exp"] = time.Now().Add(time.Minute * 60).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
+	token, err := at.SignedString([]byte(os.Getenv(constants.AccessSecret)))
 	if err != nil {
 		return "", err
 	}
@@ -111,24 +89,20 @@ func createToken(userid uint64) (string, error) {
 }
 
 // Login :  users can log in this endpoint and receive a JTW
-func Login(c *gin.Context) {
-	var u User
-	if err := c.ShouldBindJSON(&u); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
-		return
+func (user User) Login() (string, error) {
+	var test User
+	common.DB.Debug().Table("user").Select("id", "username", "password").Where("username = ?", user.Username).Scan(&test)
+	println(user.ID, user.Username, user.Password)
+	println(test.ID, test.Username, test.Password)
+
+	if !comparePasswords(test.Password, []byte(user.Password)) {
+		return "", errors.New("invalid username or password")
 	}
 
-	// TO DO check user information is OK in database
-	if user.Username != u.Username || user.Password != u.Password {
-		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
-		return
-	}
-	// // // // // //
-
-	token, err := createToken(user.ID)
+	token, err := createToken(uint64(user.ID))
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, err.Error())
-		return
+		return "", errors.New("unprocessable entity")
 	}
-	c.JSON(http.StatusOK, token)
+	activeTokens = append(activeTokens, token)
+	return token, nil
 }
