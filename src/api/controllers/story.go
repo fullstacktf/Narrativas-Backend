@@ -5,7 +5,6 @@ import (
 
 	model "github.com/fullstacktf/Narrativas-Backend/api/models"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 )
 
 // Get : returns all the stories
@@ -26,19 +25,38 @@ func GetStory(c *gin.Context) {
 // DeleteStory : endpoint that deletes a story by ID
 func DeleteStory(c *gin.Context) {
 	id := c.Params.ByName("id")
-	message := "Story with id " + id + " was deleted."
-	c.String(http.StatusOK, message)
+	var story model.Story
+	err := story.Get(id)
+	if err != nil {
+		err := story.Delete()
+		if err != nil {
+			message := "Story with id " + id + " was deleted."
+			c.JSON(http.StatusOK, gin.H{"story": story})
+			c.String(http.StatusOK, message)
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+	} else {
+		message := "Error: Story don't exist"
+		c.String(http.StatusOK, message)
+	}
 }
 
 // PostStory : endpoint that creates a story
 func PostStory(c *gin.Context) {
 	var story model.Story
-	err := c.ShouldBindWith(&story, binding.JSON)
+
+	// Example story model
+	story.ID = 1
+	story.Title = "LoImportanteEsLaSalud"
+	story.IDUser = 1
+
+	err := c.BindJSON(&story)
 	if err != nil {
 		err := story.Insert()
-
 		if err != nil {
 			message := "Story created"
+			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -50,6 +68,20 @@ func PostStory(c *gin.Context) {
 
 // PatchStory : endpoint that modify a story
 func PatchStory(c *gin.Context) {
-	message := "Story modified"
-	c.String(http.StatusOK, message)
+	id := c.Params.ByName("id")
+	var story model.Story
+	err := story.Get(id)
+	if err != nil {
+		err := story.Update()
+		if err != nil {
+			message := "Story with " + id + " was modified"
+			c.JSON(http.StatusOK, gin.H{"story": story})
+			c.String(http.StatusOK, message)
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+	} else {
+		message := "Error: Story don't exist"
+		c.String(http.StatusOK, message)
+	}
 }

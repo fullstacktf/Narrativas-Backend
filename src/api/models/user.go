@@ -14,10 +14,10 @@ import (
 
 // User : Structure
 type User struct {
-	ID        uint   `gorm:"primary_key" json:"id"`
-	Username  string `gorm:"type:varchar(50); NOT NULL" json:"username" binding:"required"`
-	Password  string `gorm:"type:varchar(255); NOT NULL" json:"password" binding:"required"`
-	Email     string `gorm:"type:varchar(50); NOT NULL" json:"email" binding:"required"`
+	ID        uint   `gorm:"column:id;primarykey" json:"id"`
+	Username  string `gorm:"column:username;type:varchar(50); NOT NULL" json:"username" binding:"required"`
+	Password  string `gorm:"column:password;type:varchar(255); NOT NULL" json:"password" binding:"required"`
+	Email     string `gorm:"column:email;type:varchar(50); NOT NULL" json:"email" binding:"required"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
