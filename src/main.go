@@ -1,20 +1,15 @@
 package main
 
 import (
-	character "github.com/fullstacktf/Narrativas-Backend/api/character"
-	user "github.com/fullstacktf/Narrativas-Backend/api/user"
-
-	"github.com/gin-gonic/gin"
+	"github.com/fullstacktf/Narrativas-Backend/common"
+	"github.com/fullstacktf/Narrativas-Backend/constants"
+	"github.com/fullstacktf/Narrativas-Backend/router"
 )
 
 func main() {
-	r := gin.Default()
+	dbdata := common.BuildDBConfig()
+	common.DbInit(dbdata)
 
-	r.GET("/character/:id", character.GetCharacter)
-	r.POST("/character/", character.PostCharacter)
-	r.DELETE("/character/:id", character.DeleteCharacter)
-	r.PATCH("/character/:id", character.PatchCharacter)
-
-	r.POST("/login", user.Login)
-	r.Run(":10000")
+	r := router.InitRouter()
+	r.Run(":" + constants.ServerPort)
 }

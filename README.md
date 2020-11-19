@@ -1,5 +1,11 @@
 # Narrativas Backend
 
+## Building: Set .env file before building
+
+Before building the project, you must set a .env file.
+
+Use .env.example file as reference.
+
 ## Endpoints MVP
 
 **/api/character/**
