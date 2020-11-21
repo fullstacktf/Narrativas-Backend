@@ -14,8 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var activeTokens []string
-
 // User : Structure
 type User struct {
 	ID        uint   `gorm:"primary_key" json:"id"`
@@ -92,17 +90,21 @@ func createToken(userid uint64) (string, error) {
 func (user User) Login() (string, error) {
 	var test User
 	common.DB.Debug().Table("user").Select("id", "username", "password").Where("username = ?", user.Username).Scan(&test)
-	println(user.ID, user.Username, user.Password)
-	println(test.ID, test.Username, test.Password)
 
 	if !comparePasswords(test.Password, []byte(user.Password)) {
 		return "", errors.New("invalid username or password")
 	}
 
-	token, err := createToken(uint64(user.ID))
+	token, err := createToken(uint64(test.ID))
 	if err != nil {
 		return "", errors.New("unprocessable entity")
 	}
-	activeTokens = append(activeTokens, token)
+	var newLoggedUser = common.UserAuth{
+		ID:    test.ID,
+		Token: token,
+	}
+
+	print(newLoggedUser.ID)
+	common.ActiveTokens = append(common.ActiveTokens, newLoggedUser)
 	return token, nil
 }

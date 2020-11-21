@@ -9,6 +9,7 @@ import (
 // InitRouter : initialice router
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+
 	router.GET("/characters/", controllers.GetCharacters)
 	router.GET("/characters/:id", controllers.GetCharacter)
 	router.POST("/characters/", controllers.PostCharacter)

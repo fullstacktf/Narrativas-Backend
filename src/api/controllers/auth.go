@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	models "github.com/fullstacktf/Narrativas-Backend/api/models"
+	m "github.com/fullstacktf/Narrativas-Backend/api/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -11,7 +11,7 @@ import (
 
 // Register : Endpoint that allows user register
 func Register(c *gin.Context) {
-	var newUser models.User
+	var newUser m.User
 
 	if err := c.ShouldBindWith(&newUser, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
@@ -29,7 +29,7 @@ func Register(c *gin.Context) {
 
 // Login : endpoint that allows user log in
 func Login(c *gin.Context) {
-	var userData models.User
+	var userData m.User
 
 	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid json provided"})
