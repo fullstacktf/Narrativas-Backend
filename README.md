@@ -73,9 +73,9 @@ Use .env.example file as reference.
 
 **Returns**
 
-# /characters/$id
+# /characters/
 
-**Method:** PATCH
+**Method:** PUT
 
 **Header:** token
 
