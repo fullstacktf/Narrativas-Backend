@@ -18,12 +18,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	_, err := newUser.Register()
+	err := newUser.Register()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"message": "user created succesfully"})
+		c.Status(http.StatusCreated)
 	}
 }
 

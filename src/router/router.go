@@ -14,7 +14,7 @@ func InitRouter() *gin.Engine {
 	router.GET("/characters/:id", controllers.GetCharacter)
 	router.POST("/characters/", controllers.PostCharacter)
 	router.DELETE("/characters/:id", controllers.DeleteCharacter)
-	router.PATCH("/characters/:id", controllers.PatchCharacter)
+	router.PUT("/characters/", controllers.PutCharacter)
 
 	router.GET("/stories/:id", controllers.GetStory)
 	router.POST("/stories/", controllers.PostStory)

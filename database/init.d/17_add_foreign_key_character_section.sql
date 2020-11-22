@@ -1,4 +1,4 @@
-ALTER TABLE `roliffy`.`character_section`
+ALTER TABLE `rollify`.`character_section`
 ADD CONSTRAINT `fk_section_character_id`
   FOREIGN KEY (`character_id`)
   REFERENCES `rollify`.`actor` (`id`)
