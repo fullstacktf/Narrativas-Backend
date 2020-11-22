@@ -57,6 +57,23 @@ Use .env.example file as reference.
 
 **Returns**
 
+  
+
+**Method:** POST
+
+**Header:** token
+
+**Returns**
+
+  
+
+**Method:** PUT
+
+**Header:** token
+
+**Returns**
+
+
 # /characters/$id
 
 **Method:** GET
@@ -65,23 +82,7 @@ Use .env.example file as reference.
 
 **Returns**
 
-# /characters/
-
-**Method:** POST
-
-**Header:** token
-
-**Returns**
-
-# /characters/
-
-**Method:** PUT
-
-**Header:** token
-
-**Returns**
-
-# /characters/$id
+  
 
 **Method:** DELETE
 
