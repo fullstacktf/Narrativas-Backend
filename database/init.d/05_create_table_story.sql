@@ -11,14 +11,4 @@ CREATE TABLE IF NOT EXISTS `rollify`.`story` (
   UNIQUE INDEX `event_id_UNIQUE` (`initial_event_id` ASC) VISIBLE,
   UNIQUE INDEX `image_UNIQUE` (`image` ASC) VISIBLE,
   INDEX `fk_user_idx` (`user_id` ASC) VISIBLE,
-  CONSTRAINT `fk_user_story`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `rollify`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  INDEX `fk_event_idx` (`initial_event_id` ASC) VISIBLE,
-  CONSTRAINT `fk_initial_event`
-    FOREIGN KEY (`initial_event_id`)
-    REFERENCES `rollify`.`event` (`id`)
-    ON DELETE CASCADE,
-    ON UPDATE NO ACTION);
+  INDEX `fk_event_idx` (`initial_event_id` ASC) VISIBLE);
