@@ -7,9 +7,9 @@ Before building the project, you must set a .env file.
 Use .env.example file as reference.
 
     
-## Endpoints
+# Endpoints
 
-### /auth/register 
+## /auth/register 
 
 **Method:** POST
 
@@ -30,7 +30,7 @@ Use .env.example file as reference.
 * 422 Unprocesable Entity, { "error": msg }
 
 
-### /auth/login 
+## /auth/login 
 
 **Method:** POST
 
@@ -49,7 +49,7 @@ Use .env.example file as reference.
 * 400 Bad Request
 * 422 Unprocesable Entity
 
-### /characters/
+## /characters/
 
 **Method:** GET
 
@@ -74,7 +74,7 @@ Use .env.example file as reference.
 **Returns**
 
 
-### /characters/$id
+## /characters/$id
 
 **Method:** GET
 
