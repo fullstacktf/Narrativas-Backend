@@ -9,9 +9,4 @@ CREATE TABLE IF NOT EXISTS `rollify`.`actor` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
-  UNIQUE INDEX `image_UNIQUE` (`image` ASC) VISIBLE,
-  CONSTRAINT `fk_user_actor`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `rollify`.`user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION);
+  UNIQUE INDEX `image_UNIQUE` (`image` ASC) VISIBLE);

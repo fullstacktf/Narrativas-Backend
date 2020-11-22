@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `rollify`.`story` (
+CREATE TABLE IF NOT EXISTS `rollify`.`event_relation` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `initial_event` INT UNSIGNED NOT NULL,
   `final_event` INT UNSIGNED NOT NULL,
@@ -8,14 +8,4 @@ CREATE TABLE IF NOT EXISTS `rollify`.`story` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `relation_UNIQUE` (`initial_event`, `final_event`) VISIBLE,
   INDEX `fk_initial_event_idx` (`initial_event` ASC) VISIBLE,
-  CONSTRAINT `fk_initial_event`
-    FOREIGN KEY (`initial_event`)
-    REFERENCES `rollify`.`event` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  INDEX `fk_final_event_idx` (`final_event` ASC) VISIBLE,
-  CONSTRAINT `fk_final_event`
-    FOREIGN KEY (`final_event`)
-    REFERENCES `rollify`.`event` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  INDEX `fk_final_event_idx` (`final_event` ASC) VISIBLE);
