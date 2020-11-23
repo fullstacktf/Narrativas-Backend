@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/fullstacktf/Narrativas-Backend/common"
 
@@ -13,6 +13,14 @@ func UploadImage(c *gin.Context, path string) {
 
 	form, _ := c.MultipartForm()
 	files := form.File["file"]
+	file, _ := c.FormFile("file")
+	fileExtension := filepath.Ext(file.Filename)
+	allowedExtensions := []string{".jpg", ".png"}
+
+	if !common.StringInSlice(fileExtension, allowedExtensions) {
+		c.Status(415)
+		return
+	}
 
 	uuid, err := common.GenerateUUID()
 
@@ -22,13 +30,13 @@ func UploadImage(c *gin.Context, path string) {
 	}
 
 	for _, file := range files {
-		err := c.SaveUploadedFile(file, "./"+path+uuid+".png")
+		err := c.SaveUploadedFile(file, "./"+path+uuid+fileExtension)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		}
 	}
 
-	c.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
+	c.Status(http.StatusOK)
 }
 
 func UploadCharacter(c *gin.Context) {
