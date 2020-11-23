@@ -5,19 +5,19 @@ import (
 	"time"
 
 	common "github.com/fullstacktf/Narrativas-Backend/common"
+	"gorm.io/gorm"
 )
 
 // Story : Structure
 type Story struct {
-	// gorm.Model
-	ID        uint   `gorm:"column:id;primaryKey" json:"id"`
-	IDUser    uint   `gorm:"column:user_id;type:uint; NOT NULL;"`
-	Title     string `gorm:"column:title;type:varchar(255); NOT NULL" json:"title" binding:"required"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	// DeleteAt  time.Time
-	// description string `gorm:"type:string; NOT NULL" json:"title" binding:"required"`
-	User `gorm:"foreignKey:user_id;references:user_id"`
+	gorm.Model
+	ID          uint      `gorm:"primaryKey; ->; <-:create" json:"id"`
+	UserID      uint      `gorm:"column:user_id;foreignKey:user_id" json:"-"`
+	Title       string    `gorm:"type:varchar(50);column:title" json:"title" binding:"required"`
+	CreatedAt   time.Time `json:"-"`
+	UpdatedAt   time.Time `json:"-"`
+	Description string    `gorm:"type:string; NOT NULL; column:description" json:"description" binding:"required"`
+	//User        User      `gorm:"foreignKey:user_id; references:user_id"`
 }
 
 // TableName : Database table name map
@@ -33,7 +33,8 @@ func (s *Stories) Get() error {
 	rows, err := common.DB.
 		Model(&Story{}).
 		Select(`story.title,
-					user.Username`).
+				story.description,
+					User.username`).
 		Joins("JOIN user on user.id = story.user_id").
 		Rows()
 
@@ -60,9 +61,9 @@ func (s *Stories) Get() error {
 func (s *Story) Get(id string) error {
 	row := common.DB.
 		Model(&Story{}).
-		Select([]string{"title", "user.Username"}).
-		Where("story.idUser = ?", &id).
-		Joins("JOIN user on user.id = story.idUser").
+		Select([]string{"title", "description", "user.username"}).
+		Joins("JOIN user on user.id = story.user_id").
+		Where("story.user_id = ?", &id).
 		Row()
 
 	story := &Story{}
