@@ -14,9 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var activeTokens []string
-
-// User : Structure
 type User struct {
 	ID        uint   `gorm:"primary_key" json:"id"`
 	Username  string `gorm:"type:varchar(50); NOT NULL" json:"username"`
@@ -26,7 +23,6 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-// hashAndSalt : crypts password
 func hashAndSalt(password []byte) string {
 	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	if err != nil {
@@ -35,43 +31,36 @@ func hashAndSalt(password []byte) string {
 	return string(hash)
 }
 
-// comparePasswords : checks if a password is correct
-func comparePasswords(hashedPwd string, plainPwd []byte) bool {
+func comparePasswords(hashedPwd string, plainPwd []byte) error {
 
 	byteHash := []byte(hashedPwd)
 	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
 	if err != nil {
-		log.Println(err)
-		return false
+		return err
 	}
-
-	return true
+	return nil
 }
 
-// TableName : Database table name map
 func (User) TableName() string {
 	return "user"
 }
 
-// Register : Register values into user table
-func (user *User) Register() (bool, error) {
+func (user *User) Register() error {
 	var duplicated User
 	common.DB.Where("username = ?", &user.Username).Or("email = ?", &user.Email).Find(&duplicated)
 
 	if duplicated.ID != 0 {
-		return false, errors.New("username or email already exists")
+		return errors.New("username or email already exists")
 	}
 
 	user.Password = hashAndSalt([]byte(user.Password))
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+
 	if result := common.DB.Omit("Id").Create(user); result.Error != nil {
-		return false, errors.New("invalid data")
+		return errors.New("invalid data")
 	}
-	return true, nil
+	return nil
 }
 
-// createToken : generates a JWT that lasts 1 hour
 func createToken(userid uint64) (string, error) {
 	var err error
 
@@ -88,21 +77,25 @@ func createToken(userid uint64) (string, error) {
 	return token, nil
 }
 
-// Login :  users can log in this endpoint and receive a JTW
 func (user User) Login() (string, error) {
 	var test User
-	common.DB.Debug().Table("user").Select("id", "username", "password").Where("username = ?", user.Username).Scan(&test)
-	println(user.ID, user.Username, user.Password)
-	println(test.ID, test.Username, test.Password)
+	common.DB.Table("user").Select("id", "username", "password").Where("username = ?", user.Username).Scan(&test)
 
-	if !comparePasswords(test.Password, []byte(user.Password)) {
+	if err := comparePasswords(test.Password, []byte(user.Password)); err != nil {
 		return "", errors.New("invalid username or password")
 	}
 
-	token, err := createToken(uint64(user.ID))
+	token, err := createToken(uint64(test.ID))
+
 	if err != nil {
 		return "", errors.New("unprocessable entity")
 	}
-	activeTokens = append(activeTokens, token)
+
+	var newLoggedUser = common.UserAuth{
+		ID:    test.ID,
+		Token: token,
+	}
+
+	common.ActiveTokens = append(common.ActiveTokens, newLoggedUser)
 	return token, nil
 }
