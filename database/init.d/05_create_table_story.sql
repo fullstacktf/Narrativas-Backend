@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `rollify`.`story` (
   `user_id` INT UNSIGNED NOT NULL,
   `initial_event_id` INT UNSIGNED NULL,
   `title` VARCHAR(50) NOT NULL,
+  `description` LONGTEXT NULL,
   `image` VARCHAR(150) NOT NULL,
   `created_at` TIMESTAMP(2) NULL,
   `updated_at` TIMESTAMP(2) NULL,
