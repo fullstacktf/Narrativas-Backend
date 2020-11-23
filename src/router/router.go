@@ -23,5 +23,8 @@ func InitRouter() *gin.Engine {
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)
 
+	router.POST("/upload/images/character", controllers.UploadCharacter)
+	router.POST("/upload/images/story", controllers.UploadStory)
+
 	return router
 }
