@@ -26,5 +26,7 @@ func InitRouter() *gin.Engine {
 	router.POST("/upload/images/character", controllers.UploadCharacter)
 	router.POST("/upload/images/story", controllers.UploadStory)
 
+	router.Static("/static", "./images")
+
 	return router
 }

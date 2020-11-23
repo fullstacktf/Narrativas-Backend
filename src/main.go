@@ -9,7 +9,6 @@ import (
 func main() {
 	dbdata := common.BuildDBConfig()
 	common.DbInit(dbdata)
-	go common.FileserverInit()
 
 	r := router.InitRouter()
 	r.Run(":" + constants.ServerPort)

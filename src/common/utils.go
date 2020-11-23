@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 )
 
@@ -40,18 +39,6 @@ func CreateDirs(paths []*string) {
 	}
 }
 
-func FileserverInit() {
-	defaultPath := "./images/default"
-	charactersPath := "./images/characters"
-	storiesPath := "./images/stories"
-
-	paths := []*string{&defaultPath, &charactersPath, &storiesPath}
-	CreateDirs(paths)
-
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./images"))))
-	http.ListenAndServe(":3000", nil)
-}
-
 func StringInSlice(item string, list []string) bool {
 	for _, listItem := range list {
 		if item == listItem {
@@ -59,4 +46,13 @@ func StringInSlice(item string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func Init() {
+	defaultPath := "./images/default"
+	charactersPath := "./images/characters"
+	storiesPath := "./images/stories"
+
+	paths := []*string{&defaultPath, &charactersPath, &storiesPath}
+	CreateDirs(paths)
 }
