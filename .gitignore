@@ -32,7 +32,6 @@ database/mysql_data
 # Env
 .env 
 
-# Images
 src/images/characters/*
 src/images/stories/*
 
