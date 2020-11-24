@@ -6,8 +6,7 @@ RUN go build -o main .
 
 FROM alpine
 COPY --from=builder /build/main /app/
-COPY .env /
-WORKDIR /app 
+WORKDIR /app
 
 ENV WAIT_VERSION 2.7.2
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
