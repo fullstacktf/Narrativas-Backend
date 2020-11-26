@@ -6,36 +6,92 @@ Before building the project, you must set a .env file.
 
 Use .env.example file as reference.
 
-## Endpoints MVP
+    
+# Endpoints
 
-**/api/character/**
+## /auth/register 
 
-get /api/characters/$id
+**Method:** POST
 
-delete /api/characters/$id
+**Receives** 
 
-patch /api/characters/$id
+```json
+{   
+    "username": string,
+    "password": string,
+    "email": string
+}
+```
 
-post /api/character/
+**Returns**
 
-**/api/stories/**
+* 201 Created
+* 400 Bad Request, { "error": msg }
+* 422 Unprocesable Entity, { "error": msg }
 
-get /api/stories/$id
 
-delete /api/stories/$id
+## /auth/login 
 
-patch /api/stories/$id
+**Method:** POST
 
-post /api/stories/
+**Receives** 
 
-## Opcional
+```json
+{   
+    "username": string,
+    "password": string
+}
+```
 
-**/api/users/**
+**Returns**
 
-get /api/users/$id
+* 200 Ok, { "token": string }
+* 400 Bad Request
+* 422 Unprocesable Entity
 
-delete /api/users/$id
+## /characters/
 
-patch /api/users/$id
+**Method:** GET
 
-post /api/users/
+**Header:** token
+
+**Returns**
+
+  
+
+**Method:** POST
+
+**Header:** token
+
+**Returns**
+
+  
+
+**Method:** PUT
+
+**Header:** token
+
+**Returns**
+
+
+## /characters/$id
+
+**Method:** GET
+
+**Header:** token
+
+**Returns**
+
+  
+
+**Method:** DELETE
+
+**Header:** token
+
+**Returns**
+
+* 200 Ok
+* 400 Bad Request
+* 401 Unauthorized
+* 403 Forbidden
+

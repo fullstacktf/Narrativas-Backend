@@ -1,0 +1,56 @@
+name: Deploy project
+
+on: 
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            b3cl0s3r/rollifybackend:latest
+            b3cl0s3r/rollifybackend:${{ steps.get_version.outputs.VERSION }}
+
+  ssh_deploy:
+    needs: [push_to_registry]
+    name: Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: SSH deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+           docker-compose stop 
+            docker-compose rm -f
+            docker-compose up
+      

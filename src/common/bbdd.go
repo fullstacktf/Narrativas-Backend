@@ -10,10 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// DB : database
 var DB *gorm.DB
 
-// DBConfig : Struct that configs database
 type DBConfig struct {
 	Host     string
 	Port     int
@@ -22,7 +20,6 @@ type DBConfig struct {
 	Password string
 }
 
-// BuildDBConfig : Generates DB configuration from env vars
 func BuildDBConfig() *DBConfig {
 	dbConfig := DBConfig{
 		Host:     constants.DatabaseHost,
@@ -34,7 +31,6 @@ func BuildDBConfig() *DBConfig {
 	return &dbConfig
 }
 
-// dbURL : generates MySQL URL with the given config
 func dbURL(dbConfig *DBConfig) string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -46,12 +42,10 @@ func dbURL(dbConfig *DBConfig) string {
 	)
 }
 
-// Tabler : replace table name
 type Tabler interface {
 	TableName() string
 }
 
-// DbInit : Initialices database
 func DbInit(config *DBConfig) {
 
 	db, err := gorm.Open(mysql.Open(dbURL(config)), &gorm.Config{})
