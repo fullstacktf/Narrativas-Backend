@@ -14,7 +14,7 @@ type Story struct {
 	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"user_id"`
 	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id" json:"initial_event_id"`
 	Image          string    `gorm:"type:varchar(150);column:image;NOT NULL" json:"image"`
-	Title          string    `gorm:"type:varchar(50);column:title" json:"title" binding:"required"`
+	Title          string    `gorm:"type:varchar(150);column:title" json:"title" binding:"required"`
 	CreatedAt      time.Time `json:"-"`
 	UpdatedAt      time.Time `json:"-"`
 	//Description string    `gorm:"type:string; NOT NULL; column:description" json:"description" binding:"required"`
@@ -58,24 +58,16 @@ func (s *Stories) Get() error {
 
 // Get : Get only one story through the id
 func (s *Story) Get(id string) error {
-	// row := common.DB.
-	// 	Model(&Story{}).
-	// 	Select(`story.id, story.title`).
-	// 	Joins("JOIN user ON user.id = story.user_id").
-	// 	Where("story.user_id = ?", &id).
-	// 	Row()
+	row := common.DB.
+		Model(&Story{}).
+		Select(`story.id, story.title`).
+		Joins("JOIN user ON user.id = story.user_id").
+		Where("story.user_id = ?", &id).
+		Row()
 
-	//story := &Story{}
+	story := &Story{}
 
-	//row.Scan(&story.Title, &story.ID)
-
-	s = &Story{
-		ID:             1,
-		UserID:         1,
-		InitialEventID: 1,
-		Image:          "asdfjksjañdf",
-		Title:          "Lo importante es la salud",
-	}
+	row.Scan(&story.Title, &story.ID)
 
 	return nil
 }

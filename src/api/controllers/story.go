@@ -46,16 +46,23 @@ func DeleteStory(c *gin.Context) {
 func PostStory(c *gin.Context) {
 	var story model.Story
 
+	story = &Story{
+		"user_id": 0,
+		"initial_event_id": 0,
+		"image": "asdfsdafasdfas",
+		"title": "asdfasdfsdfsdaf"
+	}
+
 	err := c.BindJSON(&story)
 	if err != nil {
-		err := story.Insert()
-		if err != nil {
+		// err := story.Insert()
+		// if err != nil {
 			message := "Story created"
 			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
+		// } else {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// }
 
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
