@@ -44,26 +44,22 @@ func DeleteStory(c *gin.Context) {
 
 // PostStory : endpoint that creates a story
 func PostStory(c *gin.Context) {
-	var testStory model.Story
+	var story model.Story
 
-	// Example story model
-	testStory.ID = 1234
-	testStory.Title = "LoImportanteEsLaSalud"
-	testStory.Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sollicitudin libero sit amet dolor mollis imperdiet. Maecenas volutpat tellus sed scelerisque scelerisque."
-
-	err := c.BindJSON(&testStory)
+	err := c.BindJSON(&story)
 	if err != nil {
-		err := testStory.Insert()
+		err := story.Insert()
 		if err != nil {
 			message := "Story created"
-			c.JSON(http.StatusOK, gin.H{"story": testStory})
+			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
 
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-
 }
 
 // PatchStory : endpoint that modify a story

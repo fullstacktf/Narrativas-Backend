@@ -5,18 +5,19 @@ import (
 	"time"
 
 	common "github.com/fullstacktf/Narrativas-Backend/common"
-	"gorm.io/gorm"
 )
 
 // Story : Structure
 type Story struct {
-	gorm.Model
-	ID          uint      `gorm:"primaryKey; ->; <-:create" json:"id"`
-	UserID      uint      `gorm:"column:user_id;foreignKey:user_id" json:"-"`
-	Title       string    `gorm:"type:varchar(50);column:title" json:"title" binding:"required"`
-	CreatedAt   time.Time `json:"-"`
-	UpdatedAt   time.Time `json:"-"`
-	Description string    `gorm:"type:string; NOT NULL; column:description" json:"description" binding:"required"`
+	//gorm.Model
+	ID             uint      `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"user_id"`
+	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id" json:"initial_event_id"`
+	Image          string    `gorm:"type:varchar(150);column:image;NOT NULL" json:"image"`
+	Title          string    `gorm:"type:varchar(50);column:title" json:"title" binding:"required"`
+	CreatedAt      time.Time `json:"-"`
+	UpdatedAt      time.Time `json:"-"`
+	//Description string    `gorm:"type:string; NOT NULL; column:description" json:"description" binding:"required"`
 	//User        User      `gorm:"foreignKey:user_id; references:user_id"`
 }
 
@@ -32,10 +33,8 @@ type Stories []Story
 func (s *Stories) Get() error {
 	rows, err := common.DB.
 		Model(&Story{}).
-		Select(`story.title,
-				story.description,
-					User.username`).
-		Joins("JOIN user on user.id = story.user_id").
+		Select(`story.id, story.title`).
+		Joins("JOIN user ON user.id = story.user_id").
 		Rows()
 
 	if err != nil {
@@ -59,16 +58,24 @@ func (s *Stories) Get() error {
 
 // Get : Get only one story through the id
 func (s *Story) Get(id string) error {
-	row := common.DB.
-		Model(&Story{}).
-		Select([]string{"title", "description", "user.username"}).
-		Joins("JOIN user on user.id = story.user_id").
-		Where("story.user_id = ?", &id).
-		Row()
+	// row := common.DB.
+	// 	Model(&Story{}).
+	// 	Select(`story.id, story.title`).
+	// 	Joins("JOIN user ON user.id = story.user_id").
+	// 	Where("story.user_id = ?", &id).
+	// 	Row()
 
-	story := &Story{}
+	//story := &Story{}
 
-	row.Scan(&story.Title, &story.User.Username)
+	//row.Scan(&story.Title, &story.ID)
+
+	s = &Story{
+		ID:             1,
+		UserID:         1,
+		InitialEventID: 1,
+		Image:          "asdfjksjañdf",
+		Title:          "Lo importante es la salud",
+	}
 
 	return nil
 }

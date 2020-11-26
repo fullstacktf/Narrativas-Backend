@@ -7,9 +7,4 @@ CREATE TABLE IF NOT EXISTS `rollify`.`event` (
   `updated_at` TIMESTAMP(2) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_story_idx` (`story_id` ASC) VISIBLE,
-  CONSTRAINT `fk_story`
-    FOREIGN KEY (`story_id`)
-    REFERENCES `rollify`.`story` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION);
+  INDEX `fk_story_idx` (`story_id` ASC) VISIBLE);
