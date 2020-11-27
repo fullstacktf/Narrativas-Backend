@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	model "github.com/fullstacktf/Narrativas-Backend/api/models"
 	"github.com/gin-gonic/gin"
@@ -27,9 +28,9 @@ func DeleteStory(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var story model.Story
 	err := story.Get(id)
-	if err != nil {
+	if err == nil {
 		err := story.Delete()
-		if err != nil {
+		if err == nil {
 			message := "Story with id " + id + " was deleted."
 			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
@@ -46,24 +47,16 @@ func DeleteStory(c *gin.Context) {
 func PostStory(c *gin.Context) {
 	var story model.Story
 
-	story = &Story{
-		"user_id": 0,
-		"initial_event_id": 0,
-		"image": "asdfsdafasdfas",
-		"title": "asdfasdfsdfsdaf"
-	}
-
 	err := c.BindJSON(&story)
-	if err != nil {
-		// err := story.Insert()
-		// if err != nil {
+	if err == nil {
+		err := story.Insert()
+		if err == nil {
 			message := "Story created"
 			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
-		// } else {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		// }
-
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -71,12 +64,16 @@ func PostStory(c *gin.Context) {
 
 // PatchStory : endpoint that modify a story
 func PatchStory(c *gin.Context) {
+
 	id := c.Params.ByName("id")
 	var story model.Story
-	err := story.Get(id)
-	if err != nil {
+	storyID, err := strconv.Atoi(id)
+	story.ID = storyID
+
+	err = c.BindJSON(&story)
+	if err == nil {
 		err := story.Update()
-		if err != nil {
+		if err == nil {
 			message := "Story with " + id + " was modified"
 			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
@@ -84,7 +81,7 @@ func PatchStory(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
 	} else {
-		message := "Error: Story don't exist"
-		c.String(http.StatusOK, message)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+
 }

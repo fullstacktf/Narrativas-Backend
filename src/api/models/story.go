@@ -10,9 +10,9 @@ import (
 // Story : Structure
 type Story struct {
 	//gorm.Model
-	ID             uint      `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	ID             int       `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
 	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"user_id"`
-	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id" json:"initial_event_id"`
+	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id;default:null" json:"initial_event_id"`
 	Image          string    `gorm:"type:varchar(150);column:image;NOT NULL" json:"image"`
 	Title          string    `gorm:"type:varchar(150);column:title" json:"title" binding:"required"`
 	CreatedAt      time.Time `json:"-"`
@@ -58,16 +58,12 @@ func (s *Stories) Get() error {
 
 // Get : Get only one story through the id
 func (s *Story) Get(id string) error {
-	row := common.DB.
+	common.DB.
 		Model(&Story{}).
 		Select(`story.id, story.title`).
 		Joins("JOIN user ON user.id = story.user_id").
-		Where("story.user_id = ?", &id).
-		Row()
-
-	story := &Story{}
-
-	row.Scan(&story.Title, &story.ID)
+		Where("story.id = ?", &id).
+		Find(&s)
 
 	return nil
 }
