@@ -1,4 +1,4 @@
-package constants
+package common
 
 import (
 	"os"
@@ -6,6 +6,11 @@ import (
 
 	"github.com/joho/godotenv"
 )
+
+type UserAuth struct {
+	ID    uint
+	Token string
+}
 
 var (
 	DatabaseHost     string
@@ -16,6 +21,7 @@ var (
 	ServerPort       string
 	JWTSecret        string
 	AccessSecret     string
+	ActiveTokens     []UserAuth
 )
 
 func init() {

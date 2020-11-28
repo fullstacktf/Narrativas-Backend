@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	common "github.com/fullstacktf/Narrativas-Backend/common"
+	"github.com/fullstacktf/Narrativas-Backend/common"
 )
 
 type CharacterData struct {
@@ -55,17 +55,7 @@ func (CharacterSectionField) TableName() string {
 	return "character_section_field"
 }
 
-func (character Character) Insert(token string) error {
-	id, err := common.IsSignedIn(token)
-	if err != nil {
-		return err
-	}
-
-	character.UserID = id
-
-	if len(character.Name) > 50 || len(character.Name) == 0 {
-		return errors.New("character name too long")
-	}
+func (character *Character) Insert() error {
 
 	if result := common.DB.Create(&character); result.Error != nil {
 		return errors.New("invalid data provided")
@@ -73,7 +63,7 @@ func (character Character) Insert(token string) error {
 	return nil
 }
 
-func (character Character) Delete(userid uint) error {
+func (character *Character) Delete(userid uint) error {
 	common.DB.First(&character, character.ID)
 
 	if character.Name == "" || character.UserID != userid {
@@ -113,7 +103,7 @@ func (characters *Characters) Get(id uint) error {
 	return nil
 }
 
-func (character *Character) Get(id uint) error {
+func (character *Character) Get(userid uint) error {
 
 	common.DB.
 		Model(&Character{}).
@@ -132,7 +122,7 @@ func (character *Character) Get(id uint) error {
 		Where("actor.id = ? AND actor.id = character_section.character_id AND character_section.id = character_section_field.section_id", character.ID).
 		Find(&character)
 
-	if character.Name == "" || character.UserID != id {
+	if character.Name == "" || character.UserID != userid {
 		return errors.New("character not found")
 	}
 
@@ -140,17 +130,7 @@ func (character *Character) Get(id uint) error {
 
 }
 
-func (character Character) Update(token string) error {
-	id, err := common.IsSignedIn(token)
-	if err != nil {
-		return err
-	}
-
-	character.UserID = id
-
-	if len(character.Name) > 50 || len(character.Name) == 0 {
-		return errors.New("character name too long")
-	}
+func (character Character) Update() error {
 
 	if result := common.DB.Save(&character); result.Error != nil {
 		return errors.New("invalid data provided")

@@ -4,8 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	models "github.com/fullstacktf/Narrativas-Backend/api/models"
-	common "github.com/fullstacktf/Narrativas-Backend/common"
+	"github.com/fullstacktf/Narrativas-Backend/api/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -22,25 +21,12 @@ func GetCharacter(c *gin.Context) {
 	}
 
 	character.ID = uint(id)
+	userid, _ := c.Get("user_id")
 
-	token := c.Request.Header["Token"]
-
-	if len(token) == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
-		return
-	}
-
-	userid, err := common.IsSignedIn(token[0])
+	err = character.Get(userid.(uint))
 
 	if err != nil {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	err = character.Get(uint(userid))
-
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
+		c.Status(http.StatusForbidden)
 		return
 	}
 	c.JSON(http.StatusOK, character)
@@ -49,21 +35,9 @@ func GetCharacter(c *gin.Context) {
 func GetCharacters(c *gin.Context) {
 	var characters models.Characters
 
-	token := c.Request.Header["Token"]
+	userid, _ := c.Get("user_id")
 
-	if len(token) == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
-		return
-	}
-
-	id, err := common.IsSignedIn(token[0])
-
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	if err := characters.Get(id); err != nil {
+	if err := characters.Get(userid.(uint)); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
 		return
 	}
@@ -82,21 +56,10 @@ func DeleteCharacter(c *gin.Context) {
 	}
 
 	character.ID = uint(id)
-	token := c.Request.Header["Token"]
 
-	if len(token) == 0 {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
+	userid, _ := c.Get("user_id")
 
-	userid, err := common.IsSignedIn(token[0])
-
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
-		return
-	}
-
-	if err := character.Delete(userid); err != nil {
+	if err := character.Delete(userid.(uint)); err != nil {
 		c.Status(http.StatusForbidden)
 		return
 	}
@@ -112,13 +75,10 @@ func PostCharacter(c *gin.Context) {
 		return
 	}
 
-	token := c.Request.Header["Token"]
+	userid, _ := c.Get("user_id")
+	character.UserID = userid.(uint)
 
-	if len(token) == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
-	}
-
-	err := character.Insert(token[0])
+	err := character.Insert()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -135,13 +95,10 @@ func PutCharacter(c *gin.Context) {
 		return
 	}
 
-	token := c.Request.Header["Token"]
+	userid, _ := c.Get("user_id")
+	character.UserID = userid.(uint)
 
-	if len(token) == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
-	}
-
-	err := character.Update(token[0])
+	err := character.Update()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
