@@ -29,9 +29,9 @@ func UploadImage(c *gin.Context, path string) {
 		return
 	}
 
-	filename := path + uuid + fileExtension
+	filename := uuid + fileExtension
 	for _, file := range files {
-		err := c.SaveUploadedFile(file, "./"+filename)
+		err := c.SaveUploadedFile(file, "./"+path+filename)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		}

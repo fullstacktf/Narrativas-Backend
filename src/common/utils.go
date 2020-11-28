@@ -69,7 +69,7 @@ func StringInSlice(item string, list []string) bool {
 	return false
 }
 
-func Init() {
+func init() {
 	defaultPath := "./images/default"
 	charactersPath := "./images/characters"
 	storiesPath := "./images/stories"
