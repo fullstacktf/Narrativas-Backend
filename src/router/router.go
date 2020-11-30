@@ -1,20 +1,20 @@
 package router
 
 import (
-	controllers "github.com/fullstacktf/Narrativas-Backend/api/controllers"
+	"github.com/fullstacktf/Narrativas-Backend/api/controllers"
+	mw "github.com/fullstacktf/Narrativas-Backend/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-// InitRouter : initialice router
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/characters/", controllers.GetCharacters)
-	router.GET("/characters/:id", controllers.GetCharacter)
-	router.POST("/characters/", controllers.PostCharacter)
-	router.DELETE("/characters/:id", controllers.DeleteCharacter)
-	router.PUT("/characters/", controllers.PutCharacter)
+	router.GET("/characters/", mw.IsSignedIn, controllers.GetCharacters)
+	router.GET("/characters/:id", mw.IsSignedIn, controllers.GetCharacter)
+	router.POST("/characters/", mw.IsSignedIn, controllers.PostCharacter)
+	router.DELETE("/characters/:id", mw.IsSignedIn, controllers.DeleteCharacter)
+	router.PUT("/characters/", mw.IsSignedIn, controllers.PutCharacter)
 
 	router.GET("/story/", controllers.Get)
 	router.GET("/story/:id", controllers.GetStory)
@@ -25,8 +25,8 @@ func InitRouter() *gin.Engine {
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)
 
-	router.POST("/upload/images/character", controllers.UploadCharacter)
-	router.POST("/upload/images/story", controllers.UploadStory)
+	router.POST("/upload/images/character", mw.IsSignedIn, controllers.UploadCharacter)
+	router.POST("/upload/images/story", mw.IsSignedIn, controllers.UploadStory)
 
 	router.Static("/static", "./images")
 

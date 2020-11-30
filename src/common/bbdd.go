@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/fullstacktf/Narrativas-Backend/constants"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -22,11 +20,11 @@ type DBConfig struct {
 
 func BuildDBConfig() *DBConfig {
 	dbConfig := DBConfig{
-		Host:     constants.DatabaseHost,
-		Port:     constants.DatabasePort,
-		User:     constants.DatabaseUser,
-		Password: constants.DatabasePassword,
-		DBName:   constants.DatabaseName,
+		Host:     DatabaseHost,
+		Port:     DatabasePort,
+		User:     DatabaseUser,
+		Password: DatabasePassword,
+		DBName:   DatabaseName,
 	}
 	return &dbConfig
 }

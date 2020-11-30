@@ -18,7 +18,7 @@ func UploadImage(c *gin.Context, path string) {
 	allowedExtensions := []string{".jpg", ".png"}
 
 	if !common.StringInSlice(fileExtension, allowedExtensions) {
-		c.Status(415)
+		c.Status(http.StatusUnsupportedMediaType)
 		return
 	}
 
@@ -29,14 +29,15 @@ func UploadImage(c *gin.Context, path string) {
 		return
 	}
 
+	filename := uuid + fileExtension
 	for _, file := range files {
-		err := c.SaveUploadedFile(file, "./"+path+uuid+fileExtension)
+		err := c.SaveUploadedFile(file, "./"+path+filename)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		}
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{"image": filename})
 }
 
 func UploadCharacter(c *gin.Context) {
