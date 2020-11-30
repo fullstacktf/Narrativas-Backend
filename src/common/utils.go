@@ -2,26 +2,13 @@ package common
 
 import (
 	"crypto/rand"
-	"errors"
 	"fmt"
 	"os"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
-
-type UserAuth struct {
-	ID    uint
-	Token string
-}
-
-var ActiveTokens []UserAuth
-
-func IsSignedIn(token string) (uint, error) {
-	for _, n := range ActiveTokens {
-		if token == n.Token {
-			return n.ID, nil
-		}
-	}
-	return 0, errors.New("not logged in")
-}
 
 func GenerateUUID() (string, error) {
 	b := make([]byte, 16)
@@ -39,6 +26,40 @@ func CreateDirs(paths []*string) {
 	}
 }
 
+func HashAndSalt(password []byte) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
+func ComparePasswords(hashedPwd string, plainPwd []byte) error {
+	byteHash := []byte(hashedPwd)
+	err := bcrypt.CompareHashAndPassword(byteHash, plainPwd)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// CreateToken : Generates a JWT token
+func CreateToken(userid uint64) (string, error) {
+	var err error
+
+	os.Setenv("ACCESS_SECRET", os.Getenv(JWTSecret))
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userid
+	atClaims["exp"] = time.Now().Add(time.Minute * 60).Unix()
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	token, err := at.SignedString([]byte(os.Getenv(AccessSecret)))
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
 func StringInSlice(item string, list []string) bool {
 	for _, listItem := range list {
 		if item == listItem {
@@ -48,7 +69,7 @@ func StringInSlice(item string, list []string) bool {
 	return false
 }
 
-func Init() {
+func init() {
 	defaultPath := "./images/default"
 	charactersPath := "./images/characters"
 	storiesPath := "./images/stories"

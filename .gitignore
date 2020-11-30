@@ -32,7 +32,7 @@ database/mysql_data
 # Env
 .env 
 
-src/images/characters/*
-src/images/stories/*
+src/images/
+src/images/
 
 # End of https://www.toptal.com/developers/gitignore/api/go

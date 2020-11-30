@@ -7,30 +7,6 @@ import (
 	"github.com/fullstacktf/Narrativas-Backend/common"
 )
 
-func TestIsSignedIn(t *testing.T) {
-
-	userId := uint(1)
-	validToken := "random-token"
-
-	user := common.UserAuth{
-		ID:    userId,
-		Token: validToken,
-	}
-
-	common.ActiveTokens = append(common.ActiveTokens, user)
-	invalidToken := "123456"
-	userid, err := common.IsSignedIn(invalidToken)
-
-	if err == nil {
-		t.Errorf("There is not user signed in with token %s", validToken)
-	}
-
-	userid, err = common.IsSignedIn(validToken)
-	if userid != userId || err != nil {
-		t.Errorf("User with UserID = %d and token %s is logged in", userId, validToken)
-	}
-}
-
 func TestStringInSlice(t *testing.T) {
 	list := []string{"2", "3", "8", "1", "3", "4"}
 
@@ -46,5 +22,16 @@ func TestStringInSlice(t *testing.T) {
 		t.Errorf("String %s is in slice %s", element, list)
 	} else {
 		fmt.Printf("String %s is not in slice %s\n", element, list)
+	}
+}
+
+func TestComparePasswords(t *testing.T) {
+	password := "password123"
+	hashedPassword := "$2a$10$Xz8K0Aeos411odKB6hGc/eb0Hjv4oovo2bujLxbHw/0P59/JY8..u"
+
+	err := common.ComparePasswords(hashedPassword, []byte(password))
+
+	if err != nil {
+		t.Errorf("%s is a hash of %s", hashedPassword, password)
 	}
 }
