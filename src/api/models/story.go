@@ -12,7 +12,7 @@ type Story struct {
 	//gorm.Model
 	ID             int       `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
 	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"user_id"`
-	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id;default:null" json:"initial_event_id"`
+	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id;default:null" json:"initial_event_id,omitempty"`
 	Image          string    `gorm:"type:varchar(150);column:image;NOT NULL" json:"image"`
 	Title          string    `gorm:"type:varchar(150);column:title" json:"title" binding:"required"`
 	CreatedAt      time.Time `json:"-"`
