@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -26,13 +25,13 @@ type Story struct {
 //Event : Structure
 
 type Event struct {
-	ID          uint      `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	StoryID     uint      `gorm:"column:story_id; foreignKey:story_id" json:"story_id`
-	Title       string    `gorm:"column:title" json:"title"`
-	Description string    `gorm:"column:description" json:"description"`
-	CreatedAt   time.Time `json:"-"`
-	UpdatedAt   time.Time `json:"-"`
-	// EventRelationInitial []EventRelation `gorm:"column: father_event; foreignKey:initial_event; references:ID" json:"events,omitempty"`
+	ID            uint            `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	StoryID       int             `gorm:"column:story_id; foreignKey:story_id" json:"story_id`
+	Title         string          `gorm:"column:title" json:"title"`
+	Description   string          `gorm:"column:description" json:"description"`
+	CreatedAt     time.Time       `json:"-"`
+	UpdatedAt     time.Time       `json:"-"`
+	EventRelation []EventRelation `gorm:"column: event_relation; foreignKey:initial_event; references:ID" json:"events_relations,omitempty"`
 	// EventRelationFinal   []EventRelation `gorm:"column: children_event; foreignKey:final_event; references:ID" json:"events,omitempty"`
 }
 
@@ -46,17 +45,17 @@ type EventRelation struct {
 	UpdatedAt    uint `json:"-"`
 }
 
-// Story : Database table name map
+// TableName : Database table name map
 func (Story) TableName() string {
 	return "story"
 }
 
-// Event : Database table name map
+// TableName : Database table name map
 func (Event) TableName() string {
 	return "event"
 }
 
-// EventRelation : Database table name map
+// TableName : Database table name map
 func (EventRelation) TableName() string {
 	return "event_relation"
 }
@@ -65,6 +64,8 @@ func (EventRelation) TableName() string {
 type Stories []Story
 
 // Get : Get all the stories in the DB
+
+// ******************************* FUNCIONA CORRECTAMENTE ***************************************//
 func (s *Stories) Get(userID uint) error {
 	rows, err := common.DB.
 		Model(&Story{}).
@@ -95,60 +96,81 @@ func (s *Stories) Get(userID uint) error {
 }
 
 // Get : Get only one story through the id
+//  ******************************************************* FUNCIONA CORRECTAMENTE ************************************************//
 func (s *Story) Get(id string) error {
 
 	storyID, _ := strconv.Atoi(id)
 
-	fmt.Println("ID: \n", storyID)
-	fmt.Println("user_id: \n", *(&s.UserID))
 	common.DB.
 		Model(&Story{}).
-		Preload("Event").
+		Preload("Event.EventRelation").
 		Select(`story.id, 
 				story.title, 
 				story.image,
 				event.title,
-				event.description`).
+				event.description,
+				event_relation.initial_event,
+				event_relation.final_event`).
 		Joins("JOIN user ON user.id = story.user_id").
 		Joins("INNER JOIN event").
-		Where("user.id = ?  AND story.id = ? AND event.story_id = ?", *(&s.UserID), storyID, storyID). //Corregir
+		Joins("INNER JOIN event_relation").
+		Where("user.id = ?  AND story.id = ? AND event.story_id = ?", *&s.UserID, storyID, storyID).
 		Find(&s)
 
 	return nil
 }
 
-// Insert : Add a new story
-func (s *Story) Insert(userID uint) error {
-	if userID == *(&s.UserID) {
-		result := common.DB.Debug().Create(s)
+//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
 
-		if result.Error != nil {
-			return result.Error
-		}
+// Insert : Add a new story
+func (s *Story) Insert() error {
+	result := common.DB.Debug().Create(s)
+
+	if result.Error != nil {
+		return result.Error
 	}
+
 	return nil
 }
+
+//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
+
+// InsertEvent : Add a new event
+func (e *Event) InsertEvent() error {
+	result := common.DB.Debug().Create(e)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
 
 // Update : Update a story in the database
-func (s *Story) Update(userID uint) error {
-	if userID == *(&s.UserID) {
-		result := common.DB.Debug().Save(s)
+func (s *Story) Update() error {
+	result := common.DB.Debug().Save(s)
 
-		if result.Error != nil {
-			return result.Error
-		}
+	if result.Error != nil {
+		return result.Error
 	}
+
 	return nil
 }
 
-// Delete : Delete a story in the database
-func (s *Story) Delete(userID uint) error {
-	if userID == *(&s.UserID) {
-		result := common.DB.Debug().Delete(s)
+//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
 
-		if result.Error != nil {
-			return result.Error
-		}
+// Delete : Delete a story in the database
+// El delete funcionaba solo con la estrutura story pero ahora se queja y dice que necesita un where
+// Error : WHERE conditions required
+func (s *Story) Delete(id string) error {
+	common.DB.Debug().First(&s, id)
+	result := common.DB.Debug().Delete(&s)
+
+	if result.Error != nil {
+		return result.Error
 	}
+
 	return nil
 }

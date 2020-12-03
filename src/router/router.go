@@ -22,6 +22,8 @@ func InitRouter() *gin.Engine {
 	router.DELETE("/story/:id", mw.IsSignedIn, controllers.DeleteStory)
 	router.PATCH("/story/:id", mw.IsSignedIn, controllers.PatchStory)
 
+	// router.POST("/story/:id", mw.IsSignedIn, controllers.PostEvent)
+
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)
 

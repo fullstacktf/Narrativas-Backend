@@ -32,11 +32,12 @@ func GetStory(c *gin.Context) {
 func DeleteStory(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var story model.Story
-	userid, _ := c.Get("user_id")
+	c.Get("user_id")
+	// storyID, _ := strconv.Atoi(id)
 
 	err := story.Get(id)
 	if err == nil {
-		err := story.Delete(userid.(uint))
+		err := story.Delete(id)
 		if err == nil {
 			message := "Story with id " + id + " was deleted."
 			c.JSON(http.StatusOK, gin.H{"story": story})
@@ -58,11 +59,34 @@ func PostStory(c *gin.Context) {
 
 	err := c.BindJSON(&story)
 	if err == nil {
-		err := story.Insert(userid.(uint))
+		err := story.Insert()
 		if err == nil {
 			message := "Story created"
 			c.JSON(http.StatusOK, gin.H{"story": story})
 			c.String(http.StatusOK, message)
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}
+
+// PostEvent : Add a new event
+func PostEvent(c *gin.Context) {
+	c.Get("user_id")
+
+	id := c.Params.ByName("id")
+	var event model.Event
+
+	storyID, err := strconv.Atoi(id)
+	event.StoryID = storyID
+
+	err = c.BindJSON(&event)
+	if err == nil {
+		err := event.InsertEvent()
+		if err == nil {
+			c.JSON(http.StatusOK, gin.H{"event": event})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
@@ -83,7 +107,7 @@ func PatchStory(c *gin.Context) {
 
 	err = c.BindJSON(&story)
 	if err == nil {
-		err := story.Update(userid.(uint))
+		err := story.Update()
 		if err == nil {
 			message := "Story with " + id + " was modified"
 			c.JSON(http.StatusOK, gin.H{"story": story})
