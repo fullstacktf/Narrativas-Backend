@@ -16,11 +16,11 @@ func InitRouter() *gin.Engine {
 	router.DELETE("/characters/:id", mw.IsSignedIn, controllers.DeleteCharacter)
 	router.PUT("/characters/", mw.IsSignedIn, controllers.PutCharacter)
 
-	router.GET("/story/", controllers.Get)
-	router.GET("/story/:id", controllers.GetStory)
-	router.POST("/story/", controllers.PostStory)
-	router.DELETE("/story/:id", controllers.DeleteStory)
-	router.PATCH("/story/:id", controllers.PatchStory)
+	router.GET("/story/", mw.IsSignedIn, controllers.Get)
+	router.GET("/story/:id", mw.IsSignedIn, controllers.GetStory)
+	router.POST("/story/", mw.IsSignedIn, controllers.PostStory)
+	router.DELETE("/story/:id", mw.IsSignedIn, controllers.DeleteStory)
+	router.PATCH("/story/:id", mw.IsSignedIn, controllers.PatchStory)
 
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)

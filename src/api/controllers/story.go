@@ -11,13 +11,18 @@ import (
 // Get : returns all the stories
 func Get(c *gin.Context) {
 	var stories model.Stories
-	stories.Get()
+	userid, _ := c.Get("user_id")
+
+	stories.Get(userid.(uint))
 	c.JSON(http.StatusOK, gin.H{"data": stories})
 }
 
 // GetStory : endpoint that returns a story by ID
 func GetStory(c *gin.Context) {
 	var story model.Story
+	userid, _ := c.Get("user_id")
+	story.UserID = userid.(uint)
+
 	id := c.Params.ByName("id")
 	story.Get(id)
 	c.JSON(http.StatusOK, gin.H{"data": story})
@@ -27,9 +32,11 @@ func GetStory(c *gin.Context) {
 func DeleteStory(c *gin.Context) {
 	id := c.Params.ByName("id")
 	var story model.Story
+	userid, _ := c.Get("user_id")
+
 	err := story.Get(id)
 	if err == nil {
-		err := story.Delete()
+		err := story.Delete(userid.(uint))
 		if err == nil {
 			message := "Story with id " + id + " was deleted."
 			c.JSON(http.StatusOK, gin.H{"story": story})
@@ -46,10 +53,12 @@ func DeleteStory(c *gin.Context) {
 // PostStory : endpoint that creates a story
 func PostStory(c *gin.Context) {
 	var story model.Story
+	userid, _ := c.Get("user_id")
+	story.UserID = userid.(uint)
 
 	err := c.BindJSON(&story)
 	if err == nil {
-		err := story.Insert()
+		err := story.Insert(userid.(uint))
 		if err == nil {
 			message := "Story created"
 			c.JSON(http.StatusOK, gin.H{"story": story})
@@ -67,12 +76,14 @@ func PatchStory(c *gin.Context) {
 
 	id := c.Params.ByName("id")
 	var story model.Story
+	userid, _ := c.Get("user_id")
+	story.UserID = userid.(uint)
 	storyID, err := strconv.Atoi(id)
 	story.ID = storyID
 
 	err = c.BindJSON(&story)
 	if err == nil {
-		err := story.Update()
+		err := story.Update(userid.(uint))
 		if err == nil {
 			message := "Story with " + id + " was modified"
 			c.JSON(http.StatusOK, gin.H{"story": story})
