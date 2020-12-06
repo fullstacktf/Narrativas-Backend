@@ -9,7 +9,7 @@ import (
 
 func IsSignedIn(c *gin.Context) {
 	token := c.Request.Header["Token"]
-	print("Hola")
+
 	if len(token) == 0 {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
 	}
