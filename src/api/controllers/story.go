@@ -10,18 +10,17 @@ import (
 
 func Get(c *gin.Context) {
 	var stories model.Stories
-	// userid, _ := c.Get("user_id")
+	userid, _ := c.Get("user_id")
 
-	//stories.Get(userid.(uint))
-	stories.Get(1)
-	c.JSON(http.StatusOK, gin.H{"stories": stories})
+	stories.Get(userid.(uint))
+	c.JSON(http.StatusOK, stories)
 }
 
 func GetStory(c *gin.Context) {
 	var story model.Story
-	// userid, _ := c.Get("user_id")
-	// story.UserID = userid.(uint)
-	story.UserID = 1
+	userid, _ := c.Get("user_id")
+	story.UserID = userid.(uint)
+
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
 	if err != nil {
@@ -37,11 +36,10 @@ func GetStory(c *gin.Context) {
 func DeleteStory(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 	var story model.Story
-	// c.Get("user_id")
+	userid, _ := c.Get("user_id")
 	story.ID = uint(id)
-	userid := 1
 
-	if err = story.Delete(uint(userid)); err != nil {
+	if err = story.Delete(userid.(uint)); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
@@ -50,9 +48,8 @@ func DeleteStory(c *gin.Context) {
 
 func PostStory(c *gin.Context) {
 	var story model.Story
-	// userid, _ := c.Get("user_id")
-	// story.UserID = userid.(uint)
-	story.UserID = 1
+	userid, _ := c.Get("user_id")
+	story.UserID = userid.(uint)
 
 	if err := c.BindJSON(&story); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -105,5 +102,5 @@ func PostEventRelation(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"event_relation": relation})
+	c.JSON(http.StatusOK, relation)
 }

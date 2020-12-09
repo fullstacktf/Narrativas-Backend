@@ -86,7 +86,6 @@ func (story *Story) Get(storyID uint) error {
 
 	common.DB.
 		Model(&Story{}).
-		Debug().
 		Preload("Event.EventRelation").
 		Select(`
 				event_relation.initial_event,

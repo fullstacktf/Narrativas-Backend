@@ -42,7 +42,7 @@ func GetCharacters(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"characters": characters})
+	c.JSON(http.StatusOK, characters)
 }
 
 func DeleteCharacter(c *gin.Context) {
@@ -132,5 +132,5 @@ func PostSection(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"section": section})
+	c.JSON(http.StatusOK, section)
 }
