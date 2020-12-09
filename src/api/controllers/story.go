@@ -8,115 +8,102 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Get : returns all the stories
 func Get(c *gin.Context) {
 	var stories model.Stories
-	userid, _ := c.Get("user_id")
+	// userid, _ := c.Get("user_id")
 
-	stories.Get(userid.(uint))
-	c.JSON(http.StatusOK, gin.H{"data": stories})
+	//stories.Get(userid.(uint))
+	stories.Get(1)
+	c.JSON(http.StatusOK, gin.H{"stories": stories})
 }
 
-// GetStory : endpoint that returns a story by ID
 func GetStory(c *gin.Context) {
 	var story model.Story
-	userid, _ := c.Get("user_id")
-	story.UserID = userid.(uint)
+	// userid, _ := c.Get("user_id")
+	// story.UserID = userid.(uint)
+	story.UserID = 1
+	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
-	id := c.Params.ByName("id")
-	story.Get(id)
-	c.JSON(http.StatusOK, gin.H{"data": story})
-}
-
-// DeleteStory : endpoint that deletes a story by ID
-func DeleteStory(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var story model.Story
-	c.Get("user_id")
-	// storyID, _ := strconv.Atoi(id)
-
-	err := story.Get(id)
-	if err == nil {
-		err := story.Delete(id)
-		if err == nil {
-			message := "Story with id " + id + " was deleted."
-			c.JSON(http.StatusOK, gin.H{"story": story})
-			c.String(http.StatusOK, message)
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-	} else {
-		message := "Error: Story don't exist"
-		c.String(http.StatusOK, message)
+	if err != nil {
+		c.AbortWithStatus(400)
+		return
 	}
+
+	story.Get(uint(id))
+
+	c.JSON(http.StatusOK, gin.H{"story": story})
 }
 
-// PostStory : endpoint that creates a story
+func DeleteStory(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
+	var story model.Story
+	// c.Get("user_id")
+	story.ID = uint(id)
+	userid := 1
+
+	if err = story.Delete(uint(userid)); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	c.Status(http.StatusOK)
+}
+
 func PostStory(c *gin.Context) {
 	var story model.Story
-	userid, _ := c.Get("user_id")
-	story.UserID = userid.(uint)
+	// userid, _ := c.Get("user_id")
+	// story.UserID = userid.(uint)
+	story.UserID = 1
 
-	err := c.BindJSON(&story)
-	if err == nil {
-		err := story.Insert()
-		if err == nil {
-			message := "Story created"
-			c.JSON(http.StatusOK, gin.H{"story": story})
-			c.String(http.StatusOK, message)
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.BindJSON(&story); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
+
+	if err := story.Insert(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"story": story})
 }
 
-// PostEvent : Add a new event
 func PostEvent(c *gin.Context) {
-	c.Get("user_id")
-
-	id := c.Params.ByName("id")
 	var event model.Event
 
-	storyID, err := strconv.Atoi(id)
-	event.StoryID = storyID
+	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
-	err = c.BindJSON(&event)
-	if err == nil {
-		err := event.InsertEvent()
-		if err == nil {
-			c.JSON(http.StatusOK, gin.H{"event": event})
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err != nil {
+		c.AbortWithStatus(400)
+		return
 	}
+
+	if err := c.BindJSON(&event); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	event.StoryID = uint(id)
+
+	if err := event.Insert(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"event": event})
 }
 
-// PatchStory : endpoint that modify a story
-func PatchStory(c *gin.Context) {
+func PostEventRelation(c *gin.Context) {
+	var relation model.EventRelation
 
-	id := c.Params.ByName("id")
-	var story model.Story
-	userid, _ := c.Get("user_id")
-	story.UserID = userid.(uint)
-	storyID, err := strconv.Atoi(id)
-	story.ID = storyID
-
-	err = c.BindJSON(&story)
-	if err == nil {
-		err := story.Update()
-		if err == nil {
-			message := "Story with " + id + " was modified"
-			c.JSON(http.StatusOK, gin.H{"story": story})
-			c.String(http.StatusOK, message)
-		} else {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.BindJSON(&relation); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
+	if err := relation.Insert(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"event_relation": relation})
 }

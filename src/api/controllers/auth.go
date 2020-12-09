@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-// Register : Endpoint that allows user register
 func Register(c *gin.Context) {
 	var newUser m.User
 
@@ -27,7 +26,6 @@ func Register(c *gin.Context) {
 	}
 }
 
-// Login : endpoint that allows user log in
 func Login(c *gin.Context) {
 	var userData m.User
 

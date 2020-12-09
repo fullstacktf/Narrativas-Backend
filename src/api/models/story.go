@@ -1,77 +1,64 @@
 package models
 
 import (
+	"errors"
 	"log"
-	"strconv"
 	"time"
 
 	common "github.com/fullstacktf/Narrativas-Backend/common"
 )
 
-// Story : Structure
 type Story struct {
-	//gorm.Model
-	ID             int       `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"user_id"`
+	ID             uint      `gorm:"primaryKey;" json:"id,omitempty"`
+	UserID         uint      `gorm:"column:user_id; foreignKey:user_id" json:"-"`
 	InitialEventID uint      `gorm:"column:initial_event_id;foreignKey:initial_event_id;default:null" json:"initial_event_id,omitempty"`
-	Image          string    `gorm:"column:image;NOT NULL" json:"image"`
-	Title          string    `gorm:"column:title" json:"title" binding:"required"`
+	Image          string    `gorm:"column:image;NOT NULL" json:"image,omitempty" binding:"required"`
+	Title          string    `gorm:"column:title" json:"title,omitempty" binding:"required"`
+	Description    string    `gorm:"type:string; NOT NULL; column:description" json:"description,omitempty" binding:"required"`
 	CreatedAt      time.Time `json:"-"`
 	UpdatedAt      time.Time `json:"-"`
-	//Description string    `gorm:"type:string; NOT NULL; column:description" json:"description" binding:"required"`
-	Event []Event `gorm:"foreignKey:StoryID; references:ID" json:"events,omitempty"`
+	Event          []Event   `gorm:"foreignKey:StoryID; references:ID" json:"events,omitempty"`
 }
-
-//Event : Structure
 
 type Event struct {
-	ID            uint            `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	StoryID       int             `gorm:"column:story_id; foreignKey:story_id" json:"story_id`
-	Title         string          `gorm:"column:title" json:"title"`
-	Description   string          `gorm:"column:description" json:"description"`
-	CreatedAt     time.Time       `json:"-"`
-	UpdatedAt     time.Time       `json:"-"`
-	EventRelation []EventRelation `gorm:"column: event_relation; foreignKey:initial_event; references:ID" json:"events_relations,omitempty"`
-	// EventRelationFinal   []EventRelation `gorm:"column: children_event; foreignKey:final_event; references:ID" json:"events,omitempty"`
+	ID            uint             `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	StoryID       uint             `gorm:"column:story_id;foreignKey:story_id;references:ID" json:"story_id"`
+	Title         string           `gorm:"column:title" json:"event_title"`
+	Description   string           `gorm:"column:description" json:"event_description"`
+	CreatedAt     time.Time        `json:"-"`
+	UpdatedAt     time.Time        `json:"-"`
+	EventRelation []*EventRelation `gorm:"column:event_relation; foreignKey:initial_event; references:ID" json:"event_relation,omitempty"`
 }
-
-// EventRelation : Structure
 
 type EventRelation struct {
-	ID           uint `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	InitialEvent uint `gorm:"column:initial_event; foreignKey:initial_event" json:"initial_event`
-	FinalEvent   uint `gorm:"column:final_event; foreignKey:final_event;" json:"final_event"`
-	CreatedAt    uint `json:"-"`
-	UpdatedAt    uint `json:"-"`
+	ID           uint      `gorm:"primaryKey; <-:create" json:"id,omitempty"`
+	InitialEvent uint      `gorm:"column:initial_event; foreignKey:initial_event" json:"initial_event"`
+	FinalEvent   uint      `gorm:"column:final_event; foreignKey:final_event;" json:"final_event"`
+	CreatedAt    time.Time `json:"-"`
+	UpdatedAt    time.Time `json:"-"`
 }
 
-// TableName : Database table name map
 func (Story) TableName() string {
 	return "story"
 }
 
-// TableName : Database table name map
 func (Event) TableName() string {
 	return "event"
 }
 
-// TableName : Database table name map
 func (EventRelation) TableName() string {
 	return "event_relation"
 }
 
-// Stories : New type. Arrays of stories
 type Stories []Story
 
-// Get : Get all the stories in the DB
-
-// ******************************* FUNCIONA CORRECTAMENTE ***************************************//
 func (s *Stories) Get(userID uint) error {
 	rows, err := common.DB.
 		Model(&Story{}).
 		Select(`story.id,
 		story.image, 
-		story.title`).
+		story.title,
+		story.description`).
 		Joins("JOIN user ON user.id = story.user_id").
 		Where("user.id = ?", userID).
 		Rows()
@@ -84,8 +71,8 @@ func (s *Stories) Get(userID uint) error {
 
 	for rows.Next() {
 		story := Story{}
-		err = common.DB.ScanRows(rows, &story)
-		if err != nil {
+
+		if err := common.DB.ScanRows(rows, &story); err == nil {
 			log.Println("error al bindear", err)
 		} else {
 			log.Printf("Story:%v\n", story)
@@ -95,36 +82,48 @@ func (s *Stories) Get(userID uint) error {
 	return nil
 }
 
-// Get : Get only one story through the id
-//  ******************************************************* FUNCIONA CORRECTAMENTE ************************************************//
-func (s *Story) Get(id string) error {
-
-	storyID, _ := strconv.Atoi(id)
+func (story *Story) Get(storyID uint) error {
 
 	common.DB.
 		Model(&Story{}).
+		Debug().
 		Preload("Event.EventRelation").
-		Select(`story.id, 
-				story.title, 
-				story.image,
+		Select(`
+				event_relation.initial_event,
+				event_relation.final_event,	
 				event.title,
 				event.description,
-				event_relation.initial_event,
-				event_relation.final_event`).
+				story.id,
+				story.image,
+				story.description,
+				story.title
+		`).
 		Joins("JOIN user ON user.id = story.user_id").
 		Joins("INNER JOIN event").
 		Joins("INNER JOIN event_relation").
-		Where("user.id = ?  AND story.id = ? AND event.story_id = ?", *&s.UserID, storyID, storyID).
-		Find(&s)
+		Where("user.id = ? AND event.story_id = ? AND story.id = ? AND event.id = event_relation.initial_event", story.UserID, storyID, storyID).
+		Find(&story)
+
+	if story.Title == "" {
+		userid := story.UserID
+
+		common.DB.
+			Model(&Story{}).
+			Preload("Event").
+			Select(`story.id,
+				story.image,
+				story.description,
+				story.title`).
+			Joins("JOIN user ON user.id = story.user_id").
+			Where("user.id = ? AND story.id = ?", userid, storyID).
+			Find(&story)
+	}
 
 	return nil
 }
 
-//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
-
-// Insert : Add a new story
-func (s *Story) Insert() error {
-	result := common.DB.Debug().Create(s)
+func (story *Story) Insert() error {
+	result := common.DB.Create(story)
 
 	if result.Error != nil {
 		return result.Error
@@ -133,11 +132,8 @@ func (s *Story) Insert() error {
 	return nil
 }
 
-//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
-
-// InsertEvent : Add a new event
-func (e *Event) InsertEvent() error {
-	result := common.DB.Debug().Create(e)
+func (event *Event) Insert() error {
+	result := common.DB.Omit("event_relation").Create(event)
 
 	if result.Error != nil {
 		return result.Error
@@ -146,11 +142,8 @@ func (e *Event) InsertEvent() error {
 	return nil
 }
 
-//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
-
-// Update : Update a story in the database
-func (s *Story) Update() error {
-	result := common.DB.Debug().Save(s)
+func (relation *EventRelation) Insert() error {
+	result := common.DB.Create(relation)
 
 	if result.Error != nil {
 		return result.Error
@@ -159,18 +152,13 @@ func (s *Story) Update() error {
 	return nil
 }
 
-//  ******************************************************* ERROR : NO FUNCIONA ************************************************//
+func (story *Story) Delete(userid uint) error {
+	common.DB.First(&story, story.ID)
 
-// Delete : Delete a story in the database
-// El delete funcionaba solo con la estrutura story pero ahora se queja y dice que necesita un where
-// Error : WHERE conditions required
-func (s *Story) Delete(id string) error {
-	common.DB.Debug().First(&s, id)
-	result := common.DB.Debug().Delete(&s)
-
-	if result.Error != nil {
-		return result.Error
+	if story.Title == "" || story.UserID != userid {
+		return errors.New("error deleting story")
 	}
 
+	common.DB.Delete(&story)
 	return nil
 }
