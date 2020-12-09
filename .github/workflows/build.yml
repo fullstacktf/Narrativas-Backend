@@ -28,4 +28,5 @@ jobs:
         run: |
               cd src/
               golint .
-              go vet .
+              cd test
+              go test -v . 
