@@ -131,8 +131,22 @@ func (character *Character) Get(userid uint) error {
 }
 
 func (character Character) Update() error {
+	var deleteCharacter Character
+	deleteCharacter.ID = character.ID
 
-	if result := common.DB.Save(&character); result.Error != nil {
+	if err := deleteCharacter.Delete(character.UserID); err != nil {
+		return err
+	}
+
+	if result := common.DB.Create(&character); result.Error != nil {
+		return errors.New("invalid data provided")
+	}
+	return nil
+}
+
+func (section *CharacterSection) Insert() error {
+
+	if result := common.DB.Create(&section); result.Error != nil {
 		return errors.New("invalid data provided")
 	}
 	return nil

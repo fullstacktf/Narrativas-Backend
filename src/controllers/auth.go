@@ -3,13 +3,12 @@ package controllers
 import (
 	"net/http"
 
-	m "github.com/fullstacktf/Narrativas-Backend/api/models"
+	m "github.com/fullstacktf/Narrativas-Backend/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
-// Register : Endpoint that allows user register
 func Register(c *gin.Context) {
 	var newUser m.User
 
@@ -27,7 +26,6 @@ func Register(c *gin.Context) {
 	}
 }
 
-// Login : endpoint that allows user log in
 func Login(c *gin.Context) {
 	var userData m.User
 
