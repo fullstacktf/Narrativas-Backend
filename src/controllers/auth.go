@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	m "github.com/fullstacktf/Narrativas-Backend/api/models"
+	m "github.com/fullstacktf/Narrativas-Backend/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

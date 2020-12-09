@@ -4,14 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fullstacktf/Narrativas-Backend/api/models"
-
+	m "github.com/fullstacktf/Narrativas-Backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
 func GetCharacter(c *gin.Context) {
-	var character models.Character
+	var character m.Character
 
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
@@ -33,7 +32,7 @@ func GetCharacter(c *gin.Context) {
 }
 
 func GetCharacters(c *gin.Context) {
-	var characters models.Characters
+	var characters m.Characters
 
 	userid, _ := c.Get("user_id")
 
@@ -46,7 +45,7 @@ func GetCharacters(c *gin.Context) {
 }
 
 func DeleteCharacter(c *gin.Context) {
-	var character models.Character
+	var character m.Character
 
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
@@ -68,7 +67,7 @@ func DeleteCharacter(c *gin.Context) {
 }
 
 func PostCharacter(c *gin.Context) {
-	var character models.Character
+	var character m.Character
 
 	if err := c.ShouldBindWith(&character, binding.JSON); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "bad request"})
@@ -89,7 +88,7 @@ func PostCharacter(c *gin.Context) {
 }
 
 func PutCharacter(c *gin.Context) {
-	var character models.Character
+	var character m.Character
 
 	if err := c.ShouldBindWith(&character, binding.JSON); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "bad request"})
@@ -116,7 +115,7 @@ func PostSection(c *gin.Context) {
 		return
 	}
 
-	var section models.CharacterSection
+	var section m.CharacterSection
 
 	if err := c.ShouldBindWith(&section, binding.JSON); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "bad request"})

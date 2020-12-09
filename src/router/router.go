@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/fullstacktf/Narrativas-Backend/api/controllers"
+	"github.com/fullstacktf/Narrativas-Backend/controllers"
 	mw "github.com/fullstacktf/Narrativas-Backend/middleware"
 
 	"github.com/gin-gonic/gin"

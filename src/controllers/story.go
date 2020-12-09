@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
-	model "github.com/fullstacktf/Narrativas-Backend/api/models"
+	m "github.com/fullstacktf/Narrativas-Backend/models"
 	"github.com/gin-gonic/gin"
 )
 
 func Get(c *gin.Context) {
-	var stories model.Stories
+	var stories m.Stories
 	userid, _ := c.Get("user_id")
 
 	stories.Get(userid.(uint))
@@ -17,7 +17,7 @@ func Get(c *gin.Context) {
 }
 
 func GetStory(c *gin.Context) {
-	var story model.Story
+	var story m.Story
 	userid, _ := c.Get("user_id")
 	story.UserID = userid.(uint)
 
@@ -35,7 +35,7 @@ func GetStory(c *gin.Context) {
 
 func DeleteStory(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
-	var story model.Story
+	var story m.Story
 	userid, _ := c.Get("user_id")
 	story.ID = uint(id)
 
@@ -47,7 +47,7 @@ func DeleteStory(c *gin.Context) {
 }
 
 func PostStory(c *gin.Context) {
-	var story model.Story
+	var story m.Story
 	userid, _ := c.Get("user_id")
 	story.UserID = userid.(uint)
 
@@ -65,7 +65,7 @@ func PostStory(c *gin.Context) {
 }
 
 func PostEvent(c *gin.Context) {
-	var event model.Event
+	var event m.Event
 
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 10, 64)
 
@@ -90,7 +90,7 @@ func PostEvent(c *gin.Context) {
 }
 
 func PostEventRelation(c *gin.Context) {
-	var relation model.EventRelation
+	var relation m.EventRelation
 
 	if err := c.BindJSON(&relation); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
