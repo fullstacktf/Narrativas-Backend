@@ -17,12 +17,12 @@ func InitRouter() *gin.Engine {
 	router.PUT("/characters/", mw.IsSignedIn, controllers.PutCharacter)
 	router.POST("/characters/:id/sections", mw.IsSignedIn, controllers.PostSection)
 
-	router.GET("/stories/", controllers.Get)
-	router.GET("/stories/:id", controllers.GetStory)
-	router.POST("/stories/", controllers.PostStory)
-	router.POST("/stories/:id/events/", controllers.PostEvent)
-	router.POST("/stories/:id/events/relations", controllers.PostEventRelation)
-	router.DELETE("/stories/:id", controllers.DeleteStory)
+	router.GET("/stories/", mw.IsSignedIn, controllers.Get)
+	router.GET("/stories/:id", mw.IsSignedIn, controllers.GetStory)
+	router.POST("/stories/", mw.IsSignedIn, controllers.PostStory)
+	router.POST("/stories/:id/events/", mw.IsSignedIn, controllers.PostEvent)
+	router.POST("/stories/:id/events/relations", mw.IsSignedIn, controllers.PostEventRelation)
+	router.DELETE("/stories/:id", mw.IsSignedIn, controllers.DeleteStory)
 
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)
