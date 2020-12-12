@@ -27,7 +27,7 @@ func (user *User) Register() error {
 	common.DB.Where("username = ?", &user.Username).Or("email = ?", &user.Email).Find(&duplicated)
 
 	if duplicated.ID != 0 {
-		return errors.New("username or email already exists")
+		return errors.New("Username or email already exists")
 	}
 
 	user.Password, _ = common.HashAndSalt([]byte(user.Password))

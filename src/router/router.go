@@ -1,8 +1,11 @@
 package router
 
 import (
+	"time"
+
 	"github.com/fullstacktf/Narrativas-Backend/controllers"
 	mw "github.com/fullstacktf/Narrativas-Backend/middleware"
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +13,14 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin", "Content-type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	router.GET("/characters/", mw.IsSignedIn, controllers.GetCharacters)
 	router.GET("/characters/:id", mw.IsSignedIn, controllers.GetCharacter)
 	router.POST("/characters/", mw.IsSignedIn, controllers.PostCharacter)

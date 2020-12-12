@@ -20,7 +20,7 @@ func Register(c *gin.Context) {
 	err := newUser.Register()
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	} else {
 		c.Status(http.StatusCreated)
 	}
