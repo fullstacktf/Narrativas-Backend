@@ -15,8 +15,8 @@ func InitRouter() *gin.Engine {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"PUT", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-type"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin", "Content-type", "Token"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -38,8 +38,8 @@ func InitRouter() *gin.Engine {
 	router.POST("/auth/register", controllers.Register)
 	router.POST("/auth/login", controllers.Login)
 
-	router.POST("/upload/images/character", mw.IsSignedIn, controllers.UploadCharacter)
-	router.POST("/upload/images/story", mw.IsSignedIn, controllers.UploadStory)
+	router.PUT("/upload/images/character", mw.IsSignedIn, controllers.UploadCharacter)
+	router.PUT("/upload/images/story", mw.IsSignedIn, controllers.UploadStory)
 
 	router.Static("/static", "./images")
 

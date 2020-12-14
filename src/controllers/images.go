@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"path/filepath"
 
@@ -9,11 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UploadImage(c *gin.Context, path string) {
+// curl localhost:9090/upload/images/character -X PUT -H "Token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDc5NTA3NTYsInVzZXJfaWQiOjR9.0kjZFKUI6nCYEh36ehBCQCd4JnkYN4yRKjSyMyCOAuU" --form image=@Yo.jpg
 
+func UploadImage(c *gin.Context, path string) {
+	fmt.Println("Upload image")
 	form, _ := c.MultipartForm()
-	files := form.File["file"]
-	file, _ := c.FormFile("file")
+	files := form.File["image"]
+	file, _ := c.FormFile("image")
 	fileExtension := filepath.Ext(file.Filename)
 	allowedExtensions := []string{".jpg", ".png"}
 
