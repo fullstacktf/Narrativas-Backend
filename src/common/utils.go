@@ -43,7 +43,6 @@ func ComparePasswords(hashedPwd string, plainPwd []byte) error {
 	return nil
 }
 
-// CreateToken : Generates a JWT token
 func CreateToken(userid uint64) (string, error) {
 	var err error
 

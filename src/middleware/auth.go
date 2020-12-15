@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/fullstacktf/Narrativas-Backend/common"
@@ -13,7 +12,7 @@ func IsSignedIn(c *gin.Context) {
 	if len(token) == 0 {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "not logged in"})
 	}
-	fmt.Print("Token: ", token)
+
 	for _, n := range common.ActiveTokens {
 		if token[0] == n.Token {
 			c.Set("user_id", n.ID)
