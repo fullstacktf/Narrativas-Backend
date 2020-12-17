@@ -16,11 +16,12 @@ func InitRouter() *gin.Engine {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-type", "Token"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Token", "Content-Length", "Accept", "Accept-Encoding"},
 		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
+		AllowCredentials: true,
 	}))
+
 	router.GET("/characters/", mw.IsSignedIn, controllers.GetCharacters)
 	router.GET("/characters/:id", mw.IsSignedIn, controllers.GetCharacter)
 	router.POST("/characters/", mw.IsSignedIn, controllers.PostCharacter)

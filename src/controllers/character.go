@@ -84,7 +84,7 @@ func PostCharacter(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Character created succesfully"})
+	c.JSON(http.StatusOK, gin.H{"id": character.ID})
 }
 
 func PutCharacter(c *gin.Context) {
