@@ -50,7 +50,9 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-           docker-compose stop 
-            docker-compose rm -f
-            docker-compose up
+            sudo docker-compose stop 
+            sudo docker-compose rm -f
+            sudo docker-compose pull
+            docker-compose up -d
+
       
