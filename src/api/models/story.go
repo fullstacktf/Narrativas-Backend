@@ -25,24 +25,24 @@ type Story struct {
 //Event : Structure
 
 type Event struct {
-	ID            uint            `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	StoryID       int             `gorm:"column:story_id; foreignKey:story_id" json:"story_id`
-	Title         string          `gorm:"column:title" json:"title"`
-	Description   string          `gorm:"column:description" json:"description"`
-	CreatedAt     time.Time       `json:"-"`
-	UpdatedAt     time.Time       `json:"-"`
-	EventRelation []EventRelation `gorm:"column: event_relation; foreignKey:initial_event; references:ID" json:"events_relations,omitempty"`
+	ID            uint             `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	StoryID       int              `gorm:"column:story_id; foreignKey:story_id" json:"story_id`
+	Title         string           `gorm:"column:title" json:"title"`
+	Description   string           `gorm:"column:description" json:"description"`
+	CreatedAt     time.Time        `json:"-"`
+	UpdatedAt     time.Time        `json:"-"`
+	EventRelation []*EventRelation `gorm:"many2many:event_relation; association_jointable_foreignkey:initial_event_id"; json:"omitempty"`
 	// EventRelationFinal   []EventRelation `gorm:"column: children_event; foreignKey:final_event; references:ID" json:"events,omitempty"`
 }
 
 // EventRelation : Structure
 
 type EventRelation struct {
-	ID           uint `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
-	InitialEvent uint `gorm:"column:initial_event; foreignKey:initial_event" json:"initial_event`
-	FinalEvent   uint `gorm:"column:final_event; foreignKey:final_event;" json:"final_event"`
-	CreatedAt    uint `json:"-"`
-	UpdatedAt    uint `json:"-"`
+	ID           uint      `gorm:"primaryKey; ->; <-:create" json:"id,omitempty"`
+	InitialEvent uint      `gorm:"column:initial_event; foreignKey:initial_event; reference:ID" json:"initial_event`
+	FinalEvent   uint      `gorm:"column:final_event; foreignKey:final_event; reference:ID" json:"final_event"`
+	CreatedAt    time.Time `json:"-"`
+	UpdatedAt    time.Time `json:"-"`
 }
 
 // TableName : Database table name map
@@ -162,8 +162,6 @@ func (s *Story) Update() error {
 //  ******************************************************* ERROR : NO FUNCIONA ************************************************//
 
 // Delete : Delete a story in the database
-// El delete funcionaba solo con la estrutura story pero ahora se queja y dice que necesita un where
-// Error : WHERE conditions required
 func (s *Story) Delete(id string) error {
 	common.DB.Debug().First(&s, id)
 	result := common.DB.Debug().Delete(&s)
