@@ -9,36 +9,36 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-func Register(c *gin.Context) {
+func Register(context *gin.Context) {
 	var newUser m.User
 
-	if err := c.ShouldBindWith(&newUser, binding.JSON); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+	if err := context.ShouldBindWith(&newUser, binding.JSON); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
 
 	err := newUser.Register()
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	} else {
-		c.Status(http.StatusCreated)
+		context.Status(http.StatusCreated)
 	}
 }
 
-func Login(c *gin.Context) {
+func Login(context *gin.Context) {
 	var userData m.User
 
-	if err := c.ShouldBindWith(&userData, binding.JSON); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid json provided"})
+	if err := context.ShouldBindWith(&userData, binding.JSON); err != nil {
+		context.JSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid json provided"})
 		return
 	}
 
 	token, err := userData.Login()
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"token": token})
+		context.JSON(http.StatusOK, gin.H{"token": token})
 	}
 }

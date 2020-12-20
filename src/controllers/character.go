@@ -84,7 +84,7 @@ func PostCharacter(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Character created succesfully"})
+	c.JSON(http.StatusOK, gin.H{"id": character.ID})
 }
 
 func PutCharacter(c *gin.Context) {
@@ -103,7 +103,7 @@ func PutCharacter(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"message": "Character updated succesfully"})
+		c.JSON(http.StatusOK, character)
 	}
 }
 
@@ -123,6 +123,33 @@ func PostSection(c *gin.Context) {
 	}
 
 	section.CharacterID = uint(id)
+
+	err = section.Insert()
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, section)
+}
+
+func PostSectionField(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Params.ByName("id2"), 10, 64)
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	var section m.CharacterSectionField
+
+	if err := c.ShouldBindWith(&section, binding.JSON); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+
+	section.SectionID = uint(id)
 
 	err = section.Insert()
 
