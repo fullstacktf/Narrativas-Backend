@@ -14,7 +14,7 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+		AllowOrigins:     []string{"https://rollify.me", "http://rollify.me", "https://www.rollify.me", "http://www.rollify.me"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Token", "Content-Length", "Accept", "Accept-Encoding"},
 		ExposeHeaders:    []string{"Content-Length"},
