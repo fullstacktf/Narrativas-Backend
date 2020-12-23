@@ -14,8 +14,8 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+		AllowOrigins:     []string{"https://rollify.me", "http://rollify.me", "https://www.rollify.me", "http://www.rollify.me"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Token", "Content-Length", "Accept", "Accept-Encoding"},
 		ExposeHeaders:    []string{"Content-Length"},
 		MaxAge:           12 * time.Hour,
@@ -28,6 +28,7 @@ func InitRouter() *gin.Engine {
 	router.DELETE("/characters/:id", mw.IsSignedIn, controllers.DeleteCharacter)
 	router.PUT("/characters/", mw.IsSignedIn, controllers.PutCharacter)
 	router.POST("/characters/:id/sections", mw.IsSignedIn, controllers.PostSection)
+	router.POST("/characters/:id/sections/:id2/fields", mw.IsSignedIn, controllers.PostSectionField)
 
 	router.GET("/stories/", mw.IsSignedIn, controllers.Get)
 	router.GET("/stories/:id", mw.IsSignedIn, controllers.GetStory)

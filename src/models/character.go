@@ -15,7 +15,7 @@ type Characters []Character
 
 type Character struct {
 	ID               uint               `gorm:"primaryKey; ->; <-:create" json:"id"`
-	UserID           uint               `gorm:"foreignKey; column:user_id" json:"userid,omitempty"`
+	UserID           uint               `gorm:"foreignKey; column:user_id" json:"-"`
 	Name             string             `gorm:"type:varchar(50)" json:"name" binding:"required"`
 	Biography        string             `json:"biography" binding:"required"`
 	Image            string             `gorm:"type:varchar(150)" json:"image" binding:"required"`
@@ -123,11 +123,21 @@ func (character *Character) Get(userid uint) error {
 		Find(&character)
 
 	if character.Name == "" || character.UserID != userid {
-		return errors.New("character not found")
+		common.DB.
+			Model(&Character{}).
+			Select(`actor.name,
+					actor.user_id,
+					actor.biography,
+					actor.image
+					`).
+			Find(&character)
+
+		if character.UserID != userid {
+			return errors.New("character not found")
+		}
 	}
 
 	return nil
-
 }
 
 func (character Character) Update() error {
@@ -147,6 +157,14 @@ func (character Character) Update() error {
 func (section *CharacterSection) Insert() error {
 
 	if result := common.DB.Create(&section); result.Error != nil {
+		return errors.New("invalid data provided")
+	}
+	return nil
+}
+
+func (field *CharacterSectionField) Insert() error {
+
+	if result := common.DB.Create(&field); result.Error != nil {
 		return errors.New("invalid data provided")
 	}
 	return nil
