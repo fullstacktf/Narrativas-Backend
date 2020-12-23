@@ -8,7 +8,7 @@ Use .env.example file as reference.
 
 # Endpoints
 
-| Id | Entidad | Tipo | Url | Explicación|
+| Id | Entity | Type | Url | Explanation |
 |----|---------|------|-----|------------|
 1|Characters         |  GET    |  /characters/   | Returns all the characters         |            
 2|Characters         |  GET    | /characters/:id     |  Return one character by id        |            
