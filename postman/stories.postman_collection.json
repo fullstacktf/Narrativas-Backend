@@ -1,0 +1,239 @@
+{
+	"info": {
+		"_postman_id": "12ba70ee-da77-4ee4-9c52-193c9a683298",
+		"name": "Story Endpoint",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Story",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"type": "text",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDczNjIwNTEsInVzZXJfaWQiOjJ9.L1-r14hNQZzwDAc-8VDByDgPmLJYu4jNSTtDX5MRISk"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"initial_event_id\": null,\n    \"image\": \"image2.jpg\",\n    \"title\": \"title\",\n    \"description\": \"blabla\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/stories",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDYwODE5ODAsInVzZXJfaWQiOjJ9.bLSMnNI78nxrk2H9V7NdKhGWdjZiw9liZ3tpynboGHQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"event_title\": \"prueba222\",\n    \"event_description\": \"evento\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/stories/1/events",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"stories",
+						"1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Event Relation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDYwODE5ODAsInVzZXJfaWQiOjJ9.bLSMnNI78nxrk2H9V7NdKhGWdjZiw9liZ3tpynboGHQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"event_title\": \"prueba222\",\n    \"event_description\": \"evento\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/stories/1/events",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"stories",
+						"1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All User Stories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDYwODE5ODAsInVzZXJfaWQiOjJ9.bLSMnNI78nxrk2H9V7NdKhGWdjZiw9liZ3tpynboGHQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/characters",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"characters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One Story",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDYwODE5ODAsInVzZXJfaWQiOjJ9.bLSMnNI78nxrk2H9V7NdKhGWdjZiw9liZ3tpynboGHQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/characters/6",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"characters",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Story",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MDYwNjE2MDMsInVzZXJfaWQiOjJ9.1ICVyIVDyXabstNaAj0tfdfFOn_C-RNCHW8lB54U2GI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/characters/2",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"characters",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
